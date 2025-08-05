@@ -66,10 +66,11 @@ requiredDirs.forEach(dir => {
 });
 
 app.get('/', async (req, res) => {
+  const totalUsers = await User.count();
   res.render('home', {
     info,
     name_page: 'Inicio',
-    totalUsers: User.count()
+    totalUsers
   })
 })
 app.get('/best-play', requireLogin, async (req, res) => {
