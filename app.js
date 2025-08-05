@@ -457,7 +457,7 @@ setInterval(() => {
   fetch(`${info.dominio}/ping`)
     .then(res => console.log('Ping interno enviado:', res.status))
     .catch(err => console.error('Error en el ping:', err.message));
-}, 1 * 60 * 1000);
+}, 14 * 60 * 1000);
 
 
 app.use((req, res) => {
