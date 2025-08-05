@@ -1,0 +1,209 @@
+<%- include('partials/head') %>
+
+<main>
+  <!-- I. Home Page -->
+  <section>
+    <!-- Hero Section -->
+    <div class="hero-bg">
+      <div class="container mx-auto px-4 lg:px-6 py-10 text-center text-white">
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">Combinaciones 1 X 2</h1>
+        <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+          Esta página muestra las 27 combinaciones posibles de resultados (1 X 2) para los 3 partidos seleccionados, con sus respectivas cuotas multiplicadas.
+        </p>
+      </div>
+    </div>
+    <!-- Eventos Destacados -->
+    <div class="container mx-auto px-4 lg:px-6 py-16">
+      <div class="card rounded-xl overflow-hidden">
+        <!-- Card Header -->
+        <div class="bg-emerald-600 text-white text-center p-6">
+          <h1 class="text-3xl font-bold mb-1 flex items-center justify-center"><i data-lucide="ticket" class="w-8 h-8 mr-3"></i> Combinaciones</h1>
+          <p class="text-emerald-200">
+            <%= today %>
+          </p>
+        </div>
+
+        <div class="p-6 space-y-10">
+          <!-- Info Box
+          <div class="bg-gray-700/50 text-gray-300 p-4 rounded-lg border border-gray-600 flex items-start">
+            <i data-lucide="info" class="w-6 h-6 mr-3 text-emerald-400 flex-shrink-0 mt-1"></i>
+            <div>
+              <h2 class="text-lg font-bold text-white">Información</h2>
+            </div>
+          </div>
+          -->
+
+          <!-- Partidos Seleccionados -->
+          <div>
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center"><i data-lucide="swords" class="w-6 h-6 mr-3 text-emerald-400"></i>Partidos seleccionados</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <% partidos.forEach((partido, index) => {
+                %>
+                <div class="card rounded-lg h-100 border <%= partido.finished ? 'border-emerald-500/20': 'border-gray-700' %>">
+
+                  <div class="p-4 border-b <%= partido.finished ? 'border-emerald-500/30': 'border-gray-700' %> flex justify-between items-center">
+                    <span class="font-bold text-white">Partido <%= index + 1 %></span>
+                    <% if (partido.finished) {
+                      %>
+                      <span class="text-xs font-bold px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-400">Finalizado</span>
+                      <%
+                    } else {
+                      %>
+                      <span class="text-xs font-bold px-2 py-1 rounded-full bg-gray-700">Pendiente</span>
+                      <%
+                    } %>
+                  </div>
+                  <div class="p-4 space-y-4">
+                    <h4 class="text-lg font-bold text-white text-center"><%= partido.equipos %></h4>
+                    <div class="flex justify-between text-center">
+                      <span class="flex-1 text-sm font-semibold p-2 rounded-md <%= partido.finished && partido.resultadoFinal === '1' ? 'bg-emerald-500 text-white': 'bg-gray-700' %>">
+                        1: <span class="block font-bold"><%= parseFloat(partido.cuotaLocal).toFixed(2) %></span>
+                      </span>
+                      <span class="flex-1 text-sm font-semibold p-2 rounded-md mx-2 <%= partido.finished && partido.resultadoFinal === 'X' ? 'bg-emerald-500 text-white': 'bg-gray-700' %>">
+                        X: <span class="block font-bold"><%= parseFloat(partido.cuotaEmpate).toFixed(2) %></span>
+                      </span>
+                      <span class="flex-1 text-sm font-semibold p-2 rounded-md <%= partido.finished && partido.resultadoFinal === '2' ? 'bg-emerald-500 text-white': 'bg-gray-700' %>">
+                        2: <span class="block font-bold"><%= parseFloat(partido.cuotaVisitante).toFixed(2) %></span>
+                      </span>
+                    </div>
+                    <% if (partido.finished) {
+                      %>
+                      <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 p-2 text-center rounded-lg flex items-center justify-center text-sm">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 mr-2"></i>
+                        <strong>Resultado:</strong>&nbsp;
+                        <%= partido.resultadoFinal === '1' ? partido.local: partido.resultadoFinal === 'X' ? 'Empate': partido.visitante %>
+                      </div>
+                      <%
+                    } else {
+                      %>
+                      <div class="bg-gray-700/50 border p-2 text-center rounded-lg flex items-center justify-center text-sm text-gray-400">
+                        <i data-lucide="clock" class="w-4 h-4 mr-2"></i> Partido pendiente
+                      </div>
+                      <%
+                    } %>
+                  </div>
+                </div>
+                <%
+              }); %>
+            </div>
+          </div>
+
+          <!-- Tabla de Combinaciones -->
+          <div>
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center"><i data-lucide="list-ordered" class="w-6 h-6 mr-3 text-emerald-400"></i>Combinaciones posibles</h2>
+            <% if (todosFinalizados) {
+              %>
+              <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 p-4 rounded-lg flex items-center mb-6">
+                <i data-lucide="party-popper" class="w-6 h-6 mr-3 flex-shrink-0"></i>
+                <div>
+                  Todos los partidos han finalizado. La combinación ganadora está resaltada.
+                </div>
+              </div>
+              <%
+            } else {
+              %>
+              <div class="bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 p-4 rounded-lg flex items-center mb-6">
+                <i data-lucide="alert-triangle" class="w-6 h-6 mr-3 flex-shrink-0"></i>
+                <div>
+                  Algunos partidos están pendientes. Los resultados se mostrarán cuando todos los partidos finalicen.
+                </div>
+              </div>
+              <%
+            } %>
+            <div class="overflow-x-auto shadow-sm rounded-lg border border-gray-700">
+              <table class="min-w-full text-sm text-left">
+                <thead class="bg-gray-800 text-xs text-gray-300 uppercase">
+                  <tr>
+                    <th scope="col" class="px-3 py-2 md:px-6 md:py-3 text-center">#</th>
+                    <th scope="col" class="px-3 py-2 md:px-6 md:py-3">Combinación</th>
+                    <th scope="col" class="px-3 py-2 md:px-6 md:py-3 text-right">Cuota</th>
+                    <% if (todosFinalizados) { %>
+                      <th scope="col" class="px-3 py-2 md:px-6 md:py-3 text-center hidden xs:table-cell">Resultado</th>
+                    <% } %>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                  <% combinaciones.forEach((combi, index) => { %>
+                    <tr class="hover:bg-gray-800/50 <%= combi.esGanadora ? 'bg-emerald-500/10': '' %>">
+                      <!-- Columna # -->
+                      <td class="px-3 py-3 md:px-6 md:py-4 font-medium text-center whitespace-nowrap"><%= index + 1 %></td>
+                      
+                      <!-- Columna Combinación -->
+                      <td class="px-3 py-3 md:px-6 md:py-4 whitespace-nowrap">
+                        <code class="text-base md:text-lg font-mono bg-gray-700 px-2 py-1 rounded"><%= combi.combinacion %></code>
+                      </td>
+                      
+                      <!-- Columna Cuota -->
+                      <td class="px-3 py-3 md:px-6 md:py-4 text-right font-bold whitespace-nowrap">
+                        <span class="px-2 py-1 rounded-full text-white <%= combi.cuota > 50 ? 'bg-red-500': 'bg-emerald-500' %>"><%= combi.cuota %></span>
+                      </td>
+                      
+                      <!-- Columna Resultado (condicional y oculta en móviles muy pequeños) -->
+                      <% if (todosFinalizados) { %>
+                        <td class="px-3 py-3 md:px-6 md:py-4 text-center xs:table-cell whitespace-nowrap">
+                          <% if (combi.esGanadora) { %>
+                            <span class="inline-flex items-center text-xs font-bold px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-300">
+                              <i data-lucide="trophy" class="w-3 h-3"></i>
+                            </span>
+                          <% } else { %>
+                            <span class="inline-flex items-center text-xs font-bold px-2 py-1 rounded-full bg-gray-700 text-gray-400">
+                              <i data-lucide="x-circle" class="w-3 h-3 mr-1"></i> No
+                            </span>
+                          <% } %>
+                        </td>
+                      <% } %>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Resumen -->
+          <div>
+            <div class="card max-w-sm rounded-lg">
+              <div class="p-4 bg-gray-700/80 rounded-t-lg">
+                <h3 class="text-lg font-bold text-white flex items-center"><i data-lucide="bar-chart-3" class="w-5 h-5 mr-2 text-emerald-400"></i>Resumen de Cuotas</h3>
+              </div>
+              <div class="p-4 space-y-3 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-400">Total combinaciones:</span>
+                  <strong class="text-white">27</strong>
+                </div>
+                <% if (todosFinalizados) {
+                  %>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Combinación ganadora:</span>
+                    <strong class="text-emerald-400">#<%= indiceGanador + 1%></strong>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Cuota ganadora:</span>
+                    <strong class="text-emerald-400"><%= cuotaGanadora%></strong>
+                  </div>
+                  <%
+                } %>
+                <hr class="border-gray-700">
+                <div class="flex justify-between">
+                  <span class="text-gray-400">Cuota más alta:</span>
+                  <strong class="text-red-400"><%= combinaciones[0].cuota %></strong>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-400">Cuota más baja:</span>
+                  <strong class="text-blue-400"><%= combinaciones[26].cuota %></strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Card Footer -->
+        <div class="p-4 bg-gray-800 text-gray-500 text-xs text-center md:flex md:justify-between">
+          <span><i class="inline-block w-3 h-3" data-lucide="info"></i> Las cuotas mostradas son multiplicadas para cada combinación.</span>
+          <span class="hidden md:inline-block">Sistema de apuestas 1X2</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<%- include('partials/footer') %>

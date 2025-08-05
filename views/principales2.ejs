@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Filtro de Mercado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-900 text-white py-10 px-4">
+
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold text-center text-green-400 mb-6">Filtro por Mercado</h1>
+
+      <!-- Selector de mercado -->
+      <form method="get" class="flex flex-wrap justify-center gap-2 mb-6">
+        <% const tipos = ['1', 'X', '2', '12', '1X', 'X2', 'GG']; %>
+        <% tipos.forEach(tipo => { %>
+          <button 
+            type="submit" 
+            name="mercado" 
+            value="<%= tipo %>"
+            class="px-3 py-1 rounded-full border 
+              <% if (tipo === mercadoSeleccionado) { %>
+                bg-green-500 text-white border-green-500
+              <% } else { %>
+                bg-gray-800 text-gray-300 border-gray-600 hover:bg-gray-700
+              <% } %>"
+          >
+            <%= tipo %>
+          </button>
+        <% }); %>
+      </form>
+
+      <% if (matchesFiltrados.length === 0) { %>
+        <div class="text-center text-gray-400 text-sm">No hay partidos con el mercado <strong><%= mercadoSeleccionado %></strong>.</div>
+      <% } %>
+
+      <div class="space-y-2">
+        <% matchesFiltrados.forEach(match => { %>
+          <div class="relative flex items-center bg-gray-800 px-3 py-2 rounded-lg overflow-hidden">
+            <% if (match.finalizado) { %>
+              <% if (match.resultado === 'ganado') { %>
+                <div class="absolute top-0 right-0 h-full w-1 bg-green-500 rounded-r-lg"></div>
+              <% } else { %>
+                <div class="absolute top-0 right-0 h-full w-1 bg-red-500 rounded-r-lg"></div>
+              <% } %>
+            <% } else { %>
+              <div class="absolute top-0 right-0 h-full w-1 bg-yellow-500 rounded-r-lg"></div>
+            <% } %>
+
+            <!-- Equipos -->
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <img src="<%= match.logoLocal %>" class="w-6 h-6 flex-shrink-0" />
+                <span class="w-[150px] truncate text-sm"><%= match.local %></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <img src="<%= match.logoVisitante %>" class="w-6 h-6 flex-shrink-0" />
+                <span class="w-[150px] truncate text-sm"><%= match.visitante %></span>
+              </div>
+            </div>
+
+            <!-- Goles -->
+            <div class="w-[40px] text-center font-semibold text-sm ml-2">
+              <div><%= match.golesLocal || '' %></div>
+              <div><%= match.golesVisitante || '' %></div>
+            </div>
+
+            <!-- Tipo mercado -->
+            <div class="w-[60px] text-xs text-gray-400 text-center ml-2">
+              <div class="text-white font-bold"><%= mercadoSeleccionado %></div>
+            </div>
+
+            <!-- Cuota -->
+            <div class="w-[40px] text-right text-sm font-semibold ml-2">
+              <%= match?.cuota || '-' %>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </body>
+</html>

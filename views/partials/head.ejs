@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title><%= info.name_page %> | <%= name_page %></title>
+
+  <meta name="description" content="<%= info.desc %>">
+  <meta name="keywords" content="apuestas deportivas, apuestas en vivo, pronósticos, cuotas, fútbol, guías de apuestas, juego responsable">
+  <meta name="author" content="<%= info.author %>">
+  <meta name="theme-color" content="#10b981">
+
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+  <link rel="canonical" href="<%= info.dominio %>">
+
+  <meta property="og:title" content="<%= info.name_page %>">
+  <meta property="og:description" content="<%= info.desc %>.">
+
+  <meta property="og:image" content="<%= info.dominio %>imagen-social-preview.jpg">
+  <meta property="og:image:alt" content="Balon de futbol.">
+  <meta property="og:url" content="<%= info.dominio %>">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="<%= info.name_page %>">
+  <meta property="og:locale" content="es_ES">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= info.name_page %>">
+  <meta name="twitter:description" content="<%= info.desc %>">
+  <meta name="twitter:image" content="<%= info.dominio %>imagen-twitter-preview.jpg">
+  <meta name="twitter:image:alt" content="Balon de futbol.">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#111827">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <link rel="manifest" href="/manifest.json">
+  
+  <link rel="icon" href="/images/default.png" type="image/png">
+  <link rel="apple-touch-icon" href="/images/default.png">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="antialiased">
+  <!-- Header / Navbar -->
+  <header class="bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-800">
+    <nav class="container mx-auto px-4 lg:px-6 py-3">
+      <div class="flex justify-between items-center">
+        <a href="/" class="text-3xl font-bold text-white flex items-center">
+          <i data-lucide="swords" class="mr-2 text-emerald-400"></i>
+          <%= info.name_page.slice(0, 3) %><span class="text-emerald-400"><%= info.name_page.slice(-4) %></span>
+        </a>
+        <% if (sesionIniciada) { %>
+          <div class="flex items-center space-x-2">
+            <button id="mobile-menu-button" class="lg:hidden p-2 rounded-md text-gray-300 hover:bg-gray-700">
+              <i data-lucide="menu"></i>
+            </button>
+          </div>
+        <% } else { %>
+          <div class="flex items-center space-x-2">
+            <a href="/login" class="btn-secondary px-4 py-2 rounded-lg text-sm font-bold goals-badge">Acceder</a>
+            <button id="mobile-menu-button" class="lg:hidden p-2 rounded-md text-gray-300 hover:bg-gray-700">
+              <i data-lucide="menu"></i>
+            </button>
+          </div>
+        <% } %>
+      </div>
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden lg:hidden mt-4 space-y-2">
+        <a href="/" class="block py-2 px-3 rounded-md hover:bg-gray-700 nav-link <%= currentPage === 'home' ? 'active' : '' %>">Inicio</a>
+        <a href="/best-play" class="block py-2 px-3 rounded-md hover:bg-gray-700 nav-link <%= currentPage === 'best-play' ? 'active' : '' %>">Principal</a>
+        <a href="/matches" class="block py-2 px-3 rounded-md hover:bg-gray-700 nav-link <%= currentPage === 'matches' ? 'active' : '' %>">Historial</a>
+        <div>
+          <button id="pronosticos-dropdown-button" class="w-full flex justify-between items-center py-2 px-3 rounded-md hover:bg-gray-700 nav-link <%= currentPage === 'pronosticos' ? 'active' : '' %>">
+            Pronósticos
+            <i data-lucide="chevron-down" class="w-4 h-4 transform transition-transform" id="pronosticos-chevron"></i>
+          </button>
+          <!-- Dropdown para móvil -->
+          <div id="pronosticos-dropdown" class="hidden pl-4 mt-1 space-y-1">
+            <a href="/pronosticos/destacados" class="block py-2 px-3 rounded-md hover:bg-gray-700 text-sm">Destacados</a>
+            <a href="/pronosticos/1x2" class="block py-2 px-3 rounded-md hover:bg-gray-700 text-sm">1X2</a>
+            <a href="/pronosticos/doble_oportunidad" class="block py-2 px-3 rounded-md hover:bg-gray-700 text-sm">Doble Oportunidad</a>
+            <a href="/pronosticos/ambos_marcan" class="block py-2 px-3 rounded-md hover:bg-gray-700 text-sm">Ambos Marcan</a>
+            <a href="/pronosticos/menos_mas_2-5" class="block py-2 px-3 rounded-md hover:bg-gray-700 text-sm">+/-: 2.5 Goles</a>
+          </div>
+        </div>
+        <% if (sesionIniciada) { %>
+          <div class="flex items-center space-x-2">
+            <a href="/logout" class="btn-secondary px-4 py-2 rounded-lg text-sm font-bold goals-badge">Cerrar</a>
+          </div>
+        <% } %>
+      </div>
+    </nav>
+  </header>

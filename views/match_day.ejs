@@ -1,0 +1,183 @@
+<%- include('partials/head') %>
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8 text-center"><%= title %></h1>
+    
+    <div class="pronosticos-container max-w-4xl mx-auto">
+      <!-- Contenedor de partidos -->
+      <div id="partidos-container" class="grid grid-cols-1 gap-4">
+        <% pronosticos.forEach((match, index) => { %>
+          <div class="bg-gray-800 rounded-lg p-4 shadow">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-gray-400 text-sm">Partido <%= index + 1 %></span>
+              <span class="text-gray-400 text-sm"><%= match.hora %></span>
+            </div>
+            
+            <div class="items-center justify-between mb-4">
+              <div class="flex items-center space-x-2 mb-3">
+                <img src="<%= match.equipos.local.logo %>" alt="<%= match.equipos.local.nombre %>" 
+                     class="w-8 h-8 rounded-full bg-white p-0.5 border border-gray-300">
+                <span class="text-white font-medium"><%= match.equipos.local.nombre %></span>
+              </div>
+              
+              <!--
+              <div class="text-white font-bold mx-2">vs</div>
+              -->
+              <div class="flex items-center space-x-2">
+                <img src="<%= match.equipos.visitante.logo %>" alt="<%= match.equipos.visitante.nombre %>" 
+                     class="w-8 h-8 rounded-full bg-white p-0.5 border border-gray-300">
+                <span class="text-white font-medium"><%= match.equipos.visitante.nombre %></span>
+              </div>
+            </div>
+            
+            <div class="flex justify-between items-center">
+              <div class="flex space-x-2">
+                <span class="w-8 h-8 flex items-center justify-center rounded font-bold 
+                        <%= match.pronostico === '1' ? 'bg-green-500 text-white' : 'bg-gray-700 text-gray-300' %>">
+                  1
+                </span>
+                <span class="w-8 h-8 flex items-center justify-center rounded font-bold 
+                        <%= match.pronostico === 'X' ? 'bg-green-500 text-white' : 'bg-gray-700 text-gray-300' %>">
+                  X
+                </span>
+                <span class="w-8 h-8 flex items-center justify-center rounded font-bold 
+                        <%= match.pronostico === '2' ? 'bg-green-500 text-white' : 'bg-gray-700 text-gray-300' %>">
+                  2
+                </span>
+              </div>
+              
+              <span class="<%= match.probabilidad > 50 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400' %> 
+                    text-xs font-bold px-3 py-1 rounded-full">
+                Probabilidad: <%= match.probabilidad %>%
+              </span>
+            </div>
+            
+            <div class="mt-3 text-right">
+              <span class="<%= match.finished ? 'bg-emerald-500/20 text-emerald-400': 'bg-gray-700' %> text-xs font-bold px-3 py-1 rounded-full">
+                <%= match.finished ? 'Finalizado': 'Pendiente' %>
+              </span>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+      
+      <!-- Paginación -->
+      <div class="mt-8 flex justify-center items-center space-x-6">
+        <button id="prev-page" 
+                class="pagination-btn <%= currentPage <= 1 ? 'opacity-50 cursor-not-allowed' : '' %>"
+                <%= currentPage <= 1 ? 'disabled' : '' %>>
+          <i data-lucide="chevron-left"></i>
+        </button>
+        
+        <span class="text-white font-medium page-indicator">Página <%= currentPage %></span>
+        
+        <button id="next-page" 
+                class="pagination-btn <%= !hasMore ? 'opacity-50 cursor-not-allowed' : '' %>"
+                <%= !hasMore ? 'disabled' : '' %>>
+          <i data-lucide="chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay fixed inset-0 z-50 hidden flex items-center justify-center">
+    <div class="loading-spinner"></div>
+  </div>
+  
+  <script>
+  // Variables de estado
+  let currentPage = <%= currentPage %>;
+  let hasMorePages = <%= hasMore %>;
+  
+  // Inicializar íconos Lucide
+  lucide.createIcons();
+  
+  // Manejar paginación
+  document.getElementById('prev-page').addEventListener('click', async () => {
+    await loadPage(currentPage - 1);
+  });
+  
+  document.getElementById('next-page').addEventListener('click', async () => {
+    await loadPage(currentPage + 1);
+  });
+  
+  // Función para cargar una página
+  async function loadPage(page) {
+    try {
+      showLoading();
+      console.log(`Cargando página ${page}...`);
+      
+      const response = await fetch(`/api/pronosticos?page=${page}`);
+      
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Datos recibidos:', data); // Debug
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Error en los datos recibidos');
+      }
+      
+      // Actualizar el contenedor de partidos
+      document.getElementById('partidos-container').innerHTML = data.html;
+      
+      // Actualizar estado
+      currentPage = data.currentPage;
+      hasMorePages = data.hasMore;
+      
+      // Actualizar controles de paginación
+      updatePaginationControls();
+      
+    } catch (error) {
+      console.error('Error al cargar partidos:', error);
+      alert('Error al cargar los partidos: ' + error.message);
+    } finally {
+      hideLoading();
+    }
+  }
+  
+  // Actualizar controles de paginación
+  function updatePaginationControls() {
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
+    const pageIndicator = document.querySelector('.page-indicator');
+    
+    // Actualizar indicador de página
+    if (pageIndicator) {
+      pageIndicator.textContent = `Página ${currentPage}`;
+    }
+    
+    // Actualizar botón Anterior
+    prevBtn.disabled = currentPage <= 1;
+    prevBtn.classList.toggle('opacity-50', currentPage <= 1);
+    prevBtn.classList.toggle('cursor-not-allowed', currentPage <= 1);
+    
+    // Actualizar botón Siguiente
+    nextBtn.disabled = !hasMorePages;
+    nextBtn.classList.toggle('opacity-50', !hasMorePages);
+    nextBtn.classList.toggle('cursor-not-allowed', !hasMorePages);
+    
+    // Forzar actualización de íconos Lucide
+    lucide.createIcons();
+  }
+  
+  // Mostrar loading
+  function showLoading() {
+    document.getElementById('loading-overlay').classList.remove('hidden');
+  }
+  
+  // Ocultar loading
+  function hideLoading() {
+    document.getElementById('loading-overlay').classList.add('hidden');
+  }
+  
+  // Inicializar controles al cargar
+  document.addEventListener('DOMContentLoaded', () => {
+    updatePaginationControls();
+  });
+</script>
+
+<%- include('partials/footer') %>

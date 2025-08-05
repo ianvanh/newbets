@@ -1,0 +1,28 @@
+{
+  "name": "newbets",
+  "version": "1.0.0",
+  "description": "Sistema de gestión de apuestas deportivas",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon"
+  },
+  "dependencies": {
+    "axios": "1.9.0",
+    "body-parser": "^2.2.0",
+    "chalk": "4.1.2",
+    "cheerio": "1.0.0",
+    "cors": "2.8.5",
+    "dotenv": "16.5.0",
+    "ejs": "3.1.10",
+    "express": "4.21.2",
+    "express-session": "1.18.1",
+    "moment-timezone": "0.5.48",
+    "mongoose": "8.17.0",
+    "node-fetch": "2.6.1",
+    "redis": "5.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "3.1.10"
+  }
+}

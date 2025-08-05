@@ -1,0 +1,11 @@
+{
+  "watch": ["."],
+  "ext": "js,json,ejs",
+  "ignore": [
+    "data/*.json",
+    "public/",
+    "views/",
+    "README.md"
+  ],
+  "exec": "node app.js"
+}

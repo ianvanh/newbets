@@ -1,0 +1,132 @@
+<%- include('partials/head') %>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-bg relative pt-32 pb-20 md:pt-48 md:pb-32">
+            <div class="container mx-auto px-6 text-center text-white">
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4">Analiza, Combina y Gana</h1>
+                <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">Te ofrecemos pronósticos deportivos diarios y un sistema único de combinaciones para que tomes el control de tus apuestas.</p>
+                <a href="#como-funciona" class="bg-white text-gray-900 px-8 py-3 rounded-lg font-bold text-lg transition-transform transform hover:scale-105">Aprende Cómo</a>
+            </div>
+        </section>
+
+        <!-- Cómo Funciona -->
+        <section id="como-funciona" class="py-20 bg-gray-900">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Usar <%= info.name_page %> es <span class="text-emerald-400">Así de Fácil</span></h2>
+                    <p class="text-gray-400 mt-2 max-w-2xl mx-auto">Sigue estos tres sencillos pasos para empezar a utilizar nuestros análisis a tu favor.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 md:gap-12">
+                    <!-- Paso 1 -->
+                    <div class="text-center">
+                        <div class="relative flex justify-center items-center mb-4">
+                            <div class="step-number w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold">1</div>
+                        </div>
+                        <i data-lucide="search" class="w-16 h-16 mx-auto text-emerald-400 mb-4"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">Explora los Pronósticos</h3>
+                        <p class="text-gray-400">Cada día publicamos nuevos pronósticos en diferentes mercados. Elige la categoría que más te interese.</p>
+                    </div>
+                    <!-- Paso 2 -->
+                    <div class="text-center">
+                        <div class="relative flex justify-center items-center mb-4">
+                            <div class="step-number w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold">2</div>
+                        </div>
+                        <i data-lucide="calculator" class="w-16 h-16 mx-auto text-emerald-400 mb-4"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">Entiende las Combinaciones</h3>
+                        <p class="text-gray-400">Nuestra página de combinaciones te muestra todas las posibles cuotas multiplicadas de los partidos seleccionados.</p>
+                    </div>
+                    <!-- Paso 3 -->
+                    <div class="text-center">
+                        <div class="relative flex justify-center items-center mb-4">
+                           <div class="step-number w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold">3</div>
+                        </div>
+                        <i data-lucide="trophy" class="w-16 h-16 mx-auto text-emerald-400 mb-4"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">Toma Decisiones Informadas</h3>
+                        <p class="text-gray-400">Usa nuestros datos y análisis para construir tus apuestas con una estrategia clara y aumentar tus posibilidades.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Pronósticos Diarios -->
+        <section id="pronosticos" class="py-20 bg-gray-800/50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Nuestros <span class="text-emerald-400">Pronósticos Diarios</span></h2>
+                    <p class="text-gray-400 mt-2 max-w-2xl mx-auto">Cada día, nuestro sistema analiza y publica datos para los mercados más populares.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Card Destacados -->
+                    <a class="card p-6 rounded-xl block">
+                        <i data-lucide="star" class="w-10 h-10 text-yellow-400 mb-3"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">Destacados del Día</h3>
+                        <p class="text-gray-400 text-sm">Una selección de los partidos más importantes de la jornada con nuestros pronósticos clave.</p>
+                    </a>
+                    <!-- Card 1X2 -->
+                    <a class="card p-6 rounded-xl block">
+                        <i data-lucide="swords" class="w-10 h-10 text-emerald-400 mb-3"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">Mercado 1X2</h3>
+                        <p class="text-gray-400 text-sm">El mercado clásico: pronósticos sobre si ganará el equipo local, el visitante o si habrá empate.</p>
+                    </a>
+                    <!-- Card Ambos Marcan -->
+                    <a class="card p-6 rounded-xl block">
+                        <i data-lucide="repeat" class="w-10 h-10 text-emerald-400 mb-3"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">Ambos Equipos Marcan</h3>
+                        <p class="text-gray-400 text-sm">Análisis para determinar si ambos equipos anotarán goles durante el partido (Sí o No).</p>
+                    </a>
+                    <!-- Card Doble Oportunidad -->
+                    <a class="card p-6 rounded-xl block">
+                        <i data-lucide="shield-check" class="w-10 h-10 text-emerald-400 mb-3"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">Doble Oportunidad</h3>
+                        <p class="text-gray-400 text-sm">Cubre dos de los tres resultados posibles (1X, X2, 12) para reducir el riesgo.</p>
+                    </a>
+                    <!-- Card Goles 1er Tiempo -->
+                    <a class="card p-6 rounded-xl block">
+                        <i data-lucide="timer" class="w-10 h-10 text-emerald-400 mb-3"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">Goles en el 1er Tiempo</h3>
+                        <p class="text-gray-400 text-sm">Pronósticos enfocados en si habrá más o menos de 0.5 goles durante la primera mitad del partido.</p>
+                    </a>
+                     <!-- Card Combinaciones -->
+                    <div class="card p-6 rounded-xl bg-emerald-900/50 border-emerald-500">
+                        <i data-lucide="layers" class="w-10 h-10 text-emerald-300 mb-3"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">Modo Combinaciones</h3>
+                        <p class="text-gray-400 text-sm">Nuestra herramienta estrella: visualiza todas las cuotas combinadas de los partidos seleccionados y encuentra el valor.</p>
+                    </div>
+                </div>
+            </div>
+          <!-- News & Community -->
+          
+            <div class="container mx-auto px-4 lg:px-6 py-16">
+              <!-- Contenedor flex para centrar -->
+              <div class="flex justify-center">
+                <!-- Tarjeta con ancho controlado -->
+                <div class="max-w-md w-full">
+                  <h3 class="text-2xl font-bold text-white mb-6 text-center">Únete a la <span class="text-emerald-400">Comunidad</span></h3>
+                  <div class="card p-6 rounded-lg text-center bg-gray-700/50"> <!-- Añadí un fondo para mejor visibilidad -->
+                    <i data-lucide="users" class="mx-auto w-12 h-12 text-emerald-400 mb-4"></i>
+                    <p class="text-2xl font-bold text-white">
+                      <%= totalUsers+369 %>+ Miembros
+                    </p>
+                    <p class="text-gray-400 mb-4">
+                      Discutiendo estrategias y compartiendo pronósticos 24/7.
+                    </p>
+                    <a href="#" class="btn-primary py-2 rounded-lg font-bold goals-badge inline-block">Ir al Foro</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+        </section>
+
+        <!-- Final CTA -->
+        <section class="py-20">
+            <div class="container mx-auto px-6 text-center">
+                 <h2 class="text-3xl md:text-4xl font-bold text-white">Listo para Empezar?</h2>
+                 <p class="text-gray-400 mt-2 mb-8 max-w-xl mx-auto">Explora nuestros pronósticos de hoy y descubre una nueva forma de analizar tus apuestas.</p>
+                 <a href="/best-play" class="btn-primary px-8 py-4 rounded-lg font-bold text-lg">Ver Pronósticos de Hoy</a>
+            </div>
+        </section>
+    </main>
+    
+<%- include('partials/footer') %>

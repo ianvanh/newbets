@@ -1,0 +1,169 @@
+<%- include('partials/head') %>
+
+<main>
+  <!-- I. Home Page -->
+  <section>
+    <!-- Hero Section -->
+    <div class="hero-bg">
+      <div class="container mx-auto px-4 lg:px-6 py-10 text-center text-white">
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">El mejor lugar para Apuestas Deportivas</h1>
+        <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+          Cuotas imbatibles, análisis de expertos y una comunidad apasionada. Vive el deporte como nunca antes.
+        </p>
+      </div>
+    </div>
+
+    <!-- Eventos Destacados -->
+    <div class="container mx-auto px-4 lg:px-6 py-10">
+      <% if (!bets) { %>
+        <div class="text-center">
+          <p class="text-gray-300 font-bold">
+            Calculando las mejores jugadas.
+          </p>
+          <dotlottie-player
+            src="https://lottie.host/9192a5b3-824c-4484-861a-7caa917ca8b3/8C3TsRZCag.json"
+            background="transparent"
+            speed="1"
+            style="width: 300px; height: 300px; margin: 0 auto;" class="mx-auto"
+            loop
+            autoplay>
+          </dotlottie-player>
+        </div>
+        <% } else { %>
+        <h2 class="text-3xl font-bold text-white text-center mb-2">Eventos <span class="text-emerald-400">Principales</span> de hoy</h2>
+        <p class="text-center text-gray-400 mb-10">
+          ¡No te quedes fuera!
+        </p>
+        <!-- Partidos principales -->
+          <div class="flex text-center">
+            <i data-lucide="joystick" class="mr-2"></i>
+            <strong>Partidos Principales</strong>
+          </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-4">
+          <% bets.matches.forEach((match, index) => { %>
+            <!-- Event Card -->
+            <div class="card rounded-lg p-6">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-gray-400 text-sm">Partido <%= index + 1 %></span>
+                <span class="<%= match.finished ? 'bg-emerald-500/20 text-emerald-400': 'bg-gray-700' %> text-xs font-bold px-3 py-1 rounded-full">
+                  <%= match.finished ? 'Finalizado': 'Pendiente' %>
+                </span>
+              </div>
+              <div class="flex justify-around items-center text-center my-4">
+                <div class="flex-1 flex flex-col items-center">
+                  <img src="/api/team-logo/<%= match.homeTeam.id %>" alt="<%= match.homeTeam.name %>" class="h-14 w-14 md:h-16 md:w-16 object-contain mb-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1f2937/d1d5db?text=BM';">
+                  <p class="font-bold text-white text-sm md:text-base">
+                    <%= match.homeTeam.name %>
+                  </p>
+                </div>
+                <div class="mx-2">
+                  <p class="text-3xl md:text-4xl font-bold text-white">
+                    <%= match.finished ? match.score || '0 - 0': 'vs' %>
+                  </p>
+                </div>
+                <div class="flex-1 flex flex-col items-center">
+                  <img src="/api/team-logo/<%= match.awayTeam.id %>" alt="<%= match.awayTeam.name %>" class="h-14 w-14 md:h-16 md:w-16 object-contain mb-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1f2937/d1d5db?text=BM';">
+                  <p class="font-bold text-white text-sm md:text-base">
+                    <%= match.awayTeam.name %>
+                  </p>
+                </div>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center text-sm mb-4">
+                <button class="<%= match.finished && match.winner === '1' ? 'bg-emerald-500/50 hover:bg-emerald-500': 'bg-gray-700'%> p-2 rounded-md">1 <span class="font-bold block"><%= match.odds["1"] %></span></button>
+                <button class="<%= match.finished && match.winner === 'X' ? 'bg-emerald-500/50 hover:bg-emerald-500': 'bg-gray-700'%> p-2 rounded-md">X <span class="font-bold block"><%= match.odds["X"] %></span></button>
+                <button class="<%= match.finished && match.winner === '2' ? 'bg-emerald-500/50 hover:bg-emerald-500': 'bg-gray-700'%> p-2 rounded-md">2 <span class="font-bold block"><%= match.odds["2"] %></span></button>
+              </div>
+              <% if (match.finished) { %>
+                <div class="border <%= match.finished = true ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300': 'bg-gray-700/50 text-gray-400' %> p-2 text-center rounded-lg flex items-center justify-center text-sm">
+                  <i data-lucide="<%= match.finished = true ? 'check-circle-2': 'clock'%>" class="w-4 h-4 mr-2"></i>
+                  <strong>Resultado:</strong>&nbsp;
+                  <%= match.winner === '1' ? match.homeTeam.name:
+                  match.winner === '2' ? match.awayTeam.name: 'Empate' %>
+                </div>
+              <% } %>
+            </div>
+            <% }); %>
+        </div>
+        <!-- Apuesta opcional -->
+        <% if (bets.optional) { %>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-4">
+            <div class="flex">
+              <i data-lucide="sparkles" class="mr-2"></i>
+              <strong>Apuesta Especial</strong>
+            </div>
+          </div>
+          <div class="card rounded-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-gray-400 text-sm">Goles primer tiempo</span>
+              <span class="<%= bets.optional.finished ? (bets.optional.result === 'Ganada' ? 'bg-emerald-500/20 text-emerald-400': 'bg-red-500/20 text-red-400'): 'bg-gray-700' %> text-xs font-bold px-3 py-1 rounded-full">
+                <%= bets.optional.finished ? (bets.optional.result === 'Ganada' ? 'Ganada': 'Perdida'): 'Pendiente' %>
+              </span>
+            </div>
+            <div class="flex justify-around items-center text-center my-4">
+              <div class="flex-1 flex flex-col items-center">
+                <img src="/api/team-logo/<%= bets.optional.homeTeam.id %>" alt="<%= bets.optional.homeTeam.name %>" class="h-14 w-14 md:h-16 md:w-16 object-contain mb-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1f2937/d1d5db?text=BM';">
+                <p class="font-bold text-white text-sm md:text-base">
+                  <%= bets.optional.homeTeam.name %>
+                </p>
+              </div>
+              <div class="mx-2">
+                <p class="text-3xl md:text-4xl font-bold text-white">
+                  <%= bets.optional.finished ? bets.optional.score || '0 - 0': 'vs' %>
+                </p>
+              </div>
+              <div class="flex-1 flex flex-col items-center">
+                <img src="/api/team-logo/<%= bets.optional.awayTeam.id %>" alt="<%= bets.optional.awayTeam.name %>" class="h-14 w-14 md:h-16 md:w-16 object-contain mb-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1f2937/d1d5db?text=BM';">
+                <p class="font-bold text-white text-sm md:text-base">
+                  <%= bets.optional.awayTeam.name %>
+                </p>
+              </div>
+            </div>
+            <!-- goles 1er tiempo -->
+            <div class="border <%= bets.optional.finished === true ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300': 'bg-gray-700/50 text-gray-400' %> p-2 text-center rounded-lg flex items-center justify-center text-sm mb-2">
+              <% if (bets.optional.firstHalf !== undefined) { %>
+                <i data-lucide="<%= bets.optional.finished = true ? 'check-circle-2': 'circle-x'%>" class="w-4 h-4 mr-2"></i>
+                <strong>Goles 1er tiemo:</strong>
+                <span class="ml-2 rounded-lg bg-gray-500 font-bold goals-badge"><%= bets.optional.firstHalf %></span>
+                <%
+              } else {  %>
+                <i data-lucide="clock" class="w-4 h-4 mr-2"></i>
+                <strong>Resultado Pendiente</strong>
+              <% } %>
+            </div>
+            <!-- opciones -->
+            <div class="grid gap-2">
+              <% const optionType = Object.keys(bets.optional.options)[0]; %>
+              <div class="col-span-12">
+                <div class="p-3 special-bet <%= bets.optional.finished ? (bets.optional.result === 'Ganada' ? 'bg-emerald-500/30 text-emerald-300' : 'bg-red-500 text-white') : 'bg-gray-500' %> rounded-lg">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <i class="bi bi-<%= optionType === 'over' ? 'plus' : 'dash' %>-circle mr-2"></i>
+                      <strong><%= bets.optional.options[optionType].name %></strong>
+                    </div>
+                    <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">
+                      <%= bets.optional.options[optionType].odd %>
+                    </span>
+                  </div>
+                  <% if (bets.optional.finished) { %>
+                    <div class="text-xs mt-1">
+                      <%= bets.optional.result === 'Ganada' ? '✅ Ganada' : '❌ Perdida' %>
+                    </div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% } %>
+        <!-- Fin apuesta opcional -->
+        <div class="p-6 text-center">
+          <a href="/combinations<%= query %>" class="btn-secondary px-4 py-2 rounded-lg text-sm font-bold bg-emerald-500/50 hover:bg-emerald-500 goals-badge">Combinaciones</a>
+        </div>
+        <!--
+        -->
+        <% } %>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<%- include('partials/footer') %>

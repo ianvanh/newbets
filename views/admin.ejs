@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración Moderno</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Heroicons -->
+  <script src="https://unpkg.com/heroicons@2.1.1/24/outline/index.js"></script>
+
+  <style>
+    /* Estilo base para el cuerpo y la fuente */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f3f4f6; /* gris claro de Tailwind */
+    }
+
+    /* Ocultar spinners por defecto */
+    .loading-spinner {
+      display: none;
+    }
+
+    /* Estilos para el switch personalizado */
+    .form-switch {
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .form-switch .form-switch-input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .form-switch-label {
+      margin-left: 0.75rem;
+      color: #374151; /* gray-700 */
+    }
+    .form-switch-toggle {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 24px;
+      background-color: #d1d5db; /* gray-300 */
+      border-radius: 9999px;
+      transition: background-color 0.2s ease-in-out;
+    }
+    .form-switch-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background-color: white;
+      border-radius: 50%;
+      transition: transform 0.2s ease-in-out;
+    }
+    .form-switch-input:checked + .form-switch-toggle {
+      background-color: #10b981; /* emerald-500 */
+    }
+    .form-switch-input:checked + .form-switch-toggle::after {
+      transform: translateX(16px);
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+  <!-- Navbar -->
+  <nav class="bg-emerald-500 shadow-md">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center py-3">
+        <a class="text-white text-xl font-bold flex items-center gap-2" href="/admin">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286zm0 13.036h.008v.008h-.008v-.008z" />
+          </svg>
+          Panel Admin
+        </a>
+        <div class="hidden md:flex items-center space-x-6">
+          <a href="/" class="text-white hover:text-emerald-100 transition duration-300 flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" />
+            </svg>
+            Inicio
+          </a>
+          <a href="/logout" class="bg-white text-emerald-500 font-semibold px-4 py-2 rounded-md hover:bg-emerald-100 transition duration-300 flex items-center gap-1">
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+            </svg>
+            Cerrar Sesión
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto p-4 md:p-8">
+    
+    <!-- Alerta de éxito -->
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div id="success-alert" class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 p-4 mb-6 rounded-md flex justify-between items-center shadow-sm">
+        <div class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Datos guardados correctamente!</span>
+        </div>
+        <button onclick="document.getElementById('success-alert').style.display='none'" class="text-emerald-700 hover:text-emerald-900">&times;</button>
+      </div>
+    <% } %>
+
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <h1 class="text-3xl font-bold text-gray-800">
+            Agregar Encuentros
+        </h1>
+        <button id="updateResultsBtn" class="w-full md:w-auto flex items-center justify-center gap-2 bg-yellow-400 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-yellow-500 transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.664 0l3.18-3.185m-3.18-3.182l-3.182-3.182a8.25 8.25 0 00-11.664 0l-3.18 3.183" />
+            </svg>
+            Actualizar resultados
+        </button>
+        <button id="updateCacheBtn" class="w-full md:w-auto flex items-center justify-center gap-2 bg-yellow-400 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-yellow-500 transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.664 0l3.18-3.185m-3.18-3.182l-3.182-3.182a8.25 8.25 0 00-11.664 0l-3.18 3.183" />
+            </svg>
+            Actualizar Cache
+        </button>
+    </div>
+
+    <form id="matches-form" action="/api/save-matches" method="POST" class="space-y-8">
+      <% for (let i = 1; i <= 3; i++) { %>
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl">
+          <div class="bg-emerald-500 text-white p-4 flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+            </svg>
+            <h3 class="text-xl font-bold">Encuentro <%= i %></h3>
+          </div>
+          <div class="p-6 space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">ID del Partido (Sofascore / Flashscore)</label>
+              <div class="flex flex-col sm:flex-row gap-2">
+                  <div class="relative flex-grow">
+                      <input type="text" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 match-id" name="match<%= i %>-id" required data-match-index="<%= i %>" placeholder="ID: Sofascore">
+                  </div>
+                  <div class="relative flex-grow">
+                      <input type="text" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 match-id-fl" name="match<%= i %>-id-fl" required data-match-index="<%= i %>" placeholder="ID: Flashscore">
+                  </div>
+                  <button class="flex-shrink-0 w-full sm:w-auto bg-gray-700 text-white font-bold py-3 px-5 rounded-lg hover:bg-gray-800 transition duration-300 flex items-center justify-center gap-2 preview-btn" type="button" data-match-index="<%= i %>">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 search-icon">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                      </svg>
+                      <span class="font-semibold">Buscar</span>
+                      <span class="loading-spinner">
+                          <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                      </span>
+                  </button>
+              </div>
+              <p class="text-xs text-gray-500 mt-2">Ingresa el ID de Sofascore o Flashscore para obtener los datos del partido.</p>
+            </div>
+
+            <input type="hidden" id="match<%= i %>-home" name="match<%= i %>-home">
+            <input type="hidden" id="match<%= i %>-away" name="match<%= i %>-away">
+            <input type="hidden" id="match<%= i %>-home-id" name="match<%= i %>-home-id">
+            <input type="hidden" id="match<%= i %>-away-id" name="match<%= i %>-away-id">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
+              <div>
+                <h4 class="font-semibold text-gray-600 mb-2">Local</h4>
+                <div class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg min-h-[120px]">
+                  <img id="preview-logo<%= i %>-1" class="h-12 w-12 object-contain mb-2 hidden" src="" alt="Escudo local" onerror="this.src='/images/default-badge.png'; this.classList.remove('hidden');">
+                  <span id="preview-name<%= i %>-1" class="font-bold text-gray-800"></span>
+                </div>
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-600 mb-2">Visitante</h4>
+                <div class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg min-h-[120px]">
+                  <img id="preview-logo<%= i %>-2" class="h-12 w-12 object-contain mb-2 hidden" src="" alt="Escudo visitante" onerror="this.src='/images/default-badge.png'; this.classList.remove('hidden');">
+                  <span id="preview-name<%= i %>-2" class="font-bold text-gray-800"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Cuota 1 (Gana Local)</label>
+                <input type="number" step="0.01" min="1.01" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" name="match<%= i %>-1" required>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Cuota X (Empate)</label>
+                <input type="number" step="0.01" min="1.01" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" name="match<%= i %>-X" required>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Cuota 2 (Gana Visitante)</label>
+                <input type="number" step="0.01" min="1.01" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" name="match<%= i %>-2" required>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+      
+      <!-- Apuesta Especial -->
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl">
+        <div class="bg-sky-500 text-white p-4 flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345h5.518a.562.562 0 01.321.988l-4.204 3.055a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.055a.562.562 0 01.321-.988h5.518a.563.563 0 00.475-.345L11.48 3.5z" />
+          </svg>
+          <h3 class="text-xl font-bold">Apuesta Especial de Goles</h3>
+        </div>
+        <div class="p-6 space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">ID del Partido (Opcional)</label>
+            <div class="flex flex-col sm:flex-row gap-2">
+                <input type="text" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500" id="optional-id" name="optional-id" placeholder="ID: Sofascore">
+                <input type="text" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500" name="optional-id-fl" placeholder="ID: Flashscore">
+                <button class="flex-shrink-0 w-full sm:w-auto bg-gray-700 text-white font-bold py-3 px-5 rounded-lg hover:bg-gray-800 transition duration-300 flex items-center justify-center gap-2" type="button" id="optional-preview-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 search-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                  </svg>
+                  <span class="font-semibold">Buscar</span>
+                  <span class="loading-spinner">
+                      <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                  </span>
+                </button>
+            </div>
+          </div>
+          
+          <input type="hidden" id="optional-home" name="optional-home">
+          <input type="hidden" id="optional-away" name="optional-away">
+          <input type="hidden" id="optional-home-id" name="optional-home-id">
+          <input type="hidden" id="optional-away-id" name="optional-away-id">
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
+            <div>
+                <h4 class="font-semibold text-gray-600 mb-2">Local</h4>
+                <div class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg min-h-[120px]">
+                  <img id="optional-logo-1" class="h-12 w-12 object-contain mb-2 hidden" src="" alt="Escudo local" onerror="this.src='/images/default-badge.png'; this.classList.remove('hidden');">
+                  <span id="optional-name-1" class="font-bold text-gray-800"></span>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold text-gray-600 mb-2">Visitante</h4>
+                <div class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg min-h-[120px]">
+                  <img id="optional-logo-2" class="h-12 w-12 object-contain mb-2 hidden" src="" alt="Escudo visitante" onerror="this.src='/images/default-badge.png'; this.classList.remove('hidden');">
+                  <span id="optional-name-2" class="font-bold text-gray-800"></span>
+                </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <label class="form-switch">
+                    <input type="checkbox" id="enable-over" name="enable-over" value="1" class="form-switch-input">
+                    <span class="form-switch-toggle"></span>
+                    <span class="form-switch-label font-medium">Habilitar +0.5 goles</span>
+                </label>
+                <div class="relative mt-3">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">Cuota</span>
+                    <input type="number" step="0.01" min="1.01" class="w-full p-3 pl-16 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 disabled:bg-gray-200" name="over-odd" placeholder="Ej: 1.75" disabled>
+                </div>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <label class="form-switch">
+                    <input type="checkbox" id="enable-under" name="enable-under" value="1" class="form-switch-input">
+                    <span class="form-switch-toggle"></span>
+                    <span class="form-switch-label font-medium">Habilitar -1.5 goles</span>
+                </label>
+                 <div class="relative mt-3">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">Cuota</span>
+                    <input type="number" step="0.01" min="1.01" class="w-full p-3 pl-16 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 disabled:bg-gray-200" name="under-odd" placeholder="Ej: 2.10" disabled>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row justify-end gap-4 pt-6 border-t mt-8">
+        <button type="reset" class="w-full sm:w-auto bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-300 transition duration-300 flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9.75L14.25 12m0 0l2.25 2.25M14.25 12L12 14.25m-2.58 4.92l-6.375-6.375a1.125 1.125 0 010-1.59L9.42 4.83c.211-.211.498-.33.796-.33H19.5a2.25 2.25 0 012.25 2.25v10.5a2.25 2.25 0 01-2.25 2.25h-9.284c-.298 0-.585-.119-.796-.33z" />
+          </svg>
+          Limpiar
+        </button>
+        <button type="submit" class="w-full sm:w-auto bg-emerald-500 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-emerald-600 transition duration-300 flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          Guardar Encuentros
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Modal de Error con Tailwind -->
+  <div id="errorModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-2xl w-11/12 md:w-1/3 max-w-lg mx-auto transform transition-all scale-95 opacity-0" id="errorModalContentBox">
+      <div class="flex justify-between items-center bg-red-600 text-white text-xl font-bold p-4 rounded-t-lg">
+        <h5 class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" />
+          </svg>
+          Error
+        </h5>
+        <button id="closeErrorModalBtn" class="text-white hover:text-red-200 text-2xl">&times;</button>
+      </div>
+      <div class="p-6 text-gray-700" id="errorModalBody">
+        <!-- Contenido dinámico de error -->
+      </div>
+      <div class="bg-gray-100 p-4 rounded-b-lg text-right">
+        <button id="closeErrorModalBtn2" class="bg-gray-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-gray-700 transition">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+    // --- Lógica del Modal de Error (reemplazo de Bootstrap) ---
+    const errorModal = document.getElementById('errorModal');
+    const errorModalContentBox = document.getElementById('errorModalContentBox');
+    const errorModalBody = document.getElementById('errorModalBody');
+    const closeErrorModalBtn = document.getElementById('closeErrorModalBtn');
+    const closeErrorModalBtn2 = document.getElementById('closeErrorModalBtn2');
+
+    function showError(message) {
+      errorModalBody.textContent = message;
+      errorModal.classList.remove('hidden');
+      // Animar la entrada del modal
+      setTimeout(() => {
+        errorModalContentBox.classList.remove('scale-95', 'opacity-0');
+        errorModalContentBox.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function hideError() {
+       // Animar la salida del modal
+      errorModalContentBox.classList.add('scale-95', 'opacity-0');
+      errorModalContentBox.classList.remove('scale-100', 'opacity-100');
+      setTimeout(() => {
+        errorModal.classList.add('hidden');
+      }, 200);
+    }
+    
+    closeErrorModalBtn.addEventListener('click', hideError);
+    closeErrorModalBtn2.addEventListener('click', hideError);
+    errorModal.addEventListener('click', (e) => {
+        if (e.target === errorModal) {
+            hideError();
+        }
+    });
+
+    // --- Lógica de la Aplicación (sin cambios, solo adaptada a nuevos selectores si fuera necesario) ---
+
+    // Botón: Actualizar resultados
+    document.getElementById('updateResultsBtn').addEventListener('click', async (event) => {
+      const btn = event.currentTarget;
+      const originalContent = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="animate-spin h-5 w-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Actualizando...</span>`;
+      try {
+        const res = await fetch('/api/view-data', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showError(data.message || "Actualizado con éxito"); // Usamos el modal para todo tipo de feedback
+        } else {
+          showError(data.message || "Error al actualizar");
+        }
+      } catch (e) {
+        console.error("Error al actualizar resultados:", e);
+        showError("Error de conexión al intentar actualizar los resultados.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+      }
+    });
+    document.getElementById('updateCacheBtn').addEventListener('click', async (event) => {
+      const btn = event.currentTarget;
+      const originalContent = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="animate-spin h-5 w-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Actualizando...</span>`;
+      try {
+        const res = await fetch('/api/cache', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showError(data.message || "Actualizado con éxito"); // Usamos el modal para todo tipo de feedback
+        } else {
+          showError(data.message || "Error al actualizar");
+        }
+      } catch (e) {
+        console.error("Error al actualizar resultados:", e);
+        showError("Error de conexión al intentar actualizar los resultados.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+      }
+    });
+
+    // Toggle loading state
+    function toggleLoading(element, isLoading) {
+      const spinner = element.querySelector('.loading-spinner');
+      const icon = element.querySelector('.search-icon');
+      
+      if (spinner) spinner.style.display = isLoading ? 'inline-block' : 'none';
+      if (icon) icon.style.display = isLoading ? 'none' : 'inline-block';
+      element.disabled = isLoading;
+    }
+
+    // Cargar datos del partido
+    async function loadMatchData(eventId, matchIndex = null) {
+      const btn = matchIndex 
+        ? document.querySelector(`.preview-btn[data-match-index="${matchIndex}"]`)
+        : document.getElementById('optional-preview-btn');
+      
+      if (!eventId) {
+        showError('Por favor ingresa un ID de partido válido');
+        return false;
+      }
+
+      try {
+        toggleLoading(btn, true);
+        const response = await fetch(`/api/preview-match?id=${eventId}`);
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ message: 'Error al obtener datos del partido. El servidor no respondió correctamente.' }));
+          throw new Error(errorData.message || 'Error en la respuesta del servidor.');
+        }
+
+        const data = await response.json();
+
+        if (matchIndex) {
+          // Actualizar vista para partidos principales
+          const logo1 = document.getElementById(`preview-logo${matchIndex}-1`);
+          const logo2 = document.getElementById(`preview-logo${matchIndex}-2`);
+          logo1.src = data.homeTeam.logoUrl;
+          logo1.classList.remove('hidden');
+          logo2.src = data.awayTeam.logoUrl;
+          logo2.classList.remove('hidden');
+          
+          document.getElementById(`preview-name${matchIndex}-1`).textContent = data.homeTeam.name;
+          document.getElementById(`preview-name${matchIndex}-2`).textContent = data.awayTeam.name;
+          
+          document.getElementById(`match${matchIndex}-home`).value = data.homeTeam.name;
+          document.getElementById(`match${matchIndex}-away`).value = data.awayTeam.name;
+          document.getElementById(`match${matchIndex}-home-id`).value = data.homeTeam.id;
+          document.getElementById(`match${matchIndex}-away-id`).value = data.awayTeam.id;
+        } else {
+          // Actualizar vista para partido opcional
+          const logo1 = document.getElementById('optional-logo-1');
+          const logo2 = document.getElementById('optional-logo-2');
+          logo1.src = data.homeTeam.logoUrl;
+          logo1.classList.remove('hidden');
+          logo2.src = data.awayTeam.logoUrl;
+          logo2.classList.remove('hidden');
+          
+          document.getElementById('optional-name-1').textContent = data.homeTeam.name;
+          document.getElementById('optional-name-2').textContent = data.awayTeam.name;
+          
+          document.getElementById('optional-home').value = data.homeTeam.name;
+          document.getElementById('optional-away').value = data.awayTeam.name;
+          document.getElementById('optional-home-id').value = data.homeTeam.id;
+          document.getElementById('optional-away-id').value = data.awayTeam.id;
+        }
+
+        return true;
+      } catch (error) {
+        console.error('Error:', error);
+        showError(error.message || 'No se pudieron cargar los datos del partido. Revisa el ID.');
+        return false;
+      } finally {
+        toggleLoading(btn, false);
+      }
+    }
+
+    // Habilitar/deshabilitar campos de cuotas
+    document.getElementById('enable-over').addEventListener('change', function() {
+      const oddInput = document.querySelector('input[name="over-odd"]');
+      oddInput.disabled = !this.checked;
+      if (!this.checked) oddInput.value = '';
+      else oddInput.focus();
+    });
+
+    document.getElementById('enable-under').addEventListener('change', function() {
+      const oddInput = document.querySelector('input[name="under-odd"]');
+      oddInput.disabled = !this.checked;
+      if (!this.checked) oddInput.value = '';
+      else oddInput.focus();
+    });
+
+    // Event listeners para botones de búsqueda
+    document.querySelectorAll('.preview-btn').forEach(btn => {
+      btn.addEventListener('click', async function() {
+        const matchIndex = this.dataset.matchIndex;
+        const inputElement = document.querySelector(`.match-id[data-match-index="${matchIndex}"]`);
+        await loadMatchData(inputElement.value.trim(), matchIndex);
+      });
+    });
+
+    // Event listener para partido opcional
+    document.getElementById('optional-preview-btn').addEventListener('click', async function() {
+      await loadMatchData(document.getElementById('optional-id').value.trim());
+    });
+    
+    // Auto-búsqueda al pegar o escribir en el campo de Sofascore
+    document.querySelectorAll('.match-id').forEach(input => {
+      input.addEventListener('blur', function() {
+        const matchIndex = this.dataset.matchIndex;
+        if (this.value.trim()) {
+          loadMatchData(this.value.trim(), matchIndex);
+        }
+      });
+    });
+    
+    document.getElementById('optional-id').addEventListener('blur', function() {
+        if (this.value.trim()) {
+          loadMatchData(this.value.trim());
+        }
+      });
+
+    // Validación del formulario
+    document.getElementById('matches-form').addEventListener('submit', function(e) {
+      const hasMainMatches = Array.from(document.querySelectorAll('.match-id'))
+        .some(input => input.value.trim() !== '');
+      
+      if (!hasMainMatches) {
+        e.preventDefault();
+        showError('Debes ingresar al menos un partido principal.');
+        return;
+      }
+
+      const optionalId = document.getElementById('optional-id').value.trim();
+      if (optionalId) {
+        const hasOver = document.getElementById('enable-over').checked;
+        const hasUnder = document.getElementById('enable-under').checked;
+        
+        if (!hasOver && !hasUnder) {
+          e.preventDefault();
+          showError('Debes habilitar al menos una opción de goles para el partido especial.');
+          return;
+        }
+        
+        if ((hasOver && !document.querySelector('input[name="over-odd"]').value) || 
+            (hasUnder && !document.querySelector('input[name="under-odd"]').value)) {
+          e.preventDefault();
+          showError('Debes ingresar las cuotas para las opciones de goles habilitadas.');
+          return;
+        }
+      }
+    });
+</script>
+
+</body>
+</html>

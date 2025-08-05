@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title><%= info.name_page %> | Login</title>
+
+  <meta name="description" content="<%= info.desc %>">
+  <meta name="keywords" content="apuestas deportivas, apuestas en vivo, pronósticos, cuotas, fútbol, guías de apuestas, juego responsable">
+  <meta name="author" content="<%= info.author %>">
+  <meta name="theme-color" content="#10b981">
+
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+  <link rel="canonical" href="<%= info.dominio %>">
+
+  <meta property="og:title" content="<%= info.name_page %>">
+  <meta property="og:description" content="<%= info.desc %>.">
+
+  <meta property="og:image" content="<%= info.dominio %>imagen-social-preview.jpg">
+  <meta property="og:image:alt" content="Balon de futbol.">
+  <meta property="og:url" content="<%= info.dominio %>">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="<%= info.name_page %>">
+  <meta property="og:locale" content="es_ES">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= info.name_page %>">
+  <meta name="twitter:description" content="<%= info.desc %>">
+  <meta name="twitter:image" content="<%= info.dominio %>imagen-twitter-preview.jpg">
+  <meta name="twitter:image:alt" content="Balon de futbol.">
+
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.min.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="text-gray-300">
+  <div class="fixed inset-0 overflow-hidden flex items-center justify-center p-4 login-container">
+    <div class="w-full max-w-md bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-2xl p-8 border border-gray-700">
+      <div class="text-center mb-8">
+        <a href="/" class="inline-flex items-center justify-center text-3xl font-bold text-white mb-2">
+          <i data-lucide="swords" class="mr-2 text-emerald-400"></i>
+          <%= info.name_page.slice(0, 3) %><span class="text-emerald-400"><%= info.name_page.slice(-4) %></span>
+        </a>
+        <p class="text-gray-400">Panel de Ingreso</p>
+      </div>
+
+      <div id="error-box" class="hidden bg-red-500/20 text-red-200 p-3 rounded mb-4">
+        <p id="error-message"></p>
+      </div>
+
+      <form id="login-form" method="post">
+        <div class="space-y-6 mb-8">
+          <div class="flex flex-col">
+            <label for="phone" class="block text-sm font-medium mb-2">Whatsapp</label>
+              <input type="tel" id="phone" name="phone"
+                class="form-input block w-full pr-3 py-2.5 rounded-lg border focus:border-emerald-500 transition"
+                required />
+          </div>
+          <div>
+            <label for="password" class="block text-sm font-medium mb-2">Contraseña</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                <i data-lucide="lock" class="w-5 h-5 text-gray-500"></i>
+              </span>
+              <input type="password" id="password" name="password"
+                class="form-input block w-full pl-10 pr-3 py-2.5 rounded-lg border focus:border-emerald-500 transition"
+                placeholder="••••••••" required />
+            </div>
+          </div>
+        </div>
+
+        <button id="submit-button" type="submit"
+          class="btn-primary w-full font-semibold py-3 rounded-lg shadow-lg">Ingresar</button>
+      </form>
+
+      <div class="text-center mt-8 text-sm">
+        <a href="/register" class="text-gray-400 hover:text-emerald-400 transition">&larr; Ir a la página de registro</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
+  <script>
+    const phoneInput = document.querySelector("#phone");
+    const phoneError = document.createElement('div');
+    phoneError.id = "phone-error";
+    phoneError.className = 'text-red-500 text-sm mt-1 hidden';
+    phoneInput.parentNode.appendChild(phoneError);
+  
+    const iti = window.intlTelInput(phoneInput, {
+      utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js",
+      initialCountry: "auto",
+      geoIpLookup: function(callback) {
+        fetch("https://ipapi.co/json")
+          .then(res => res.json())
+          .then(data => callback(data.country_code))
+          .catch(() => callback("us"));
+      },
+      preferredCountries: ['us', 'mx', 'es', 'co', 'ar'],
+      separateDialCode: true,
+      hiddenInput: "full_phone",
+      customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
+        return "e.g: " + selectedCountryPlaceholder;
+      }
+    });
+  
+    // Función para validar el teléfono
+    function validatePhoneNumber() {
+      const value = phoneInput.value.trim();
+      const countryData = iti.getSelectedCountryData();
+      
+      phoneInput.classList.remove('border-red-500', 'border-green-500');
+      phoneError.classList.add('hidden');
+      
+      if (!value) {
+        showPhoneError('Por favor ingresa un número de teléfono');
+        return false;
+      }
+      
+      if (!iti.isValidNumber()) {
+        const errorType = iti.getValidationError();
+        const errorMessage = getErrorMessage(errorType, countryData.name);
+        showPhoneError(errorMessage);
+        return false;
+      }
+      
+      phoneInput.classList.add('border-green-500');
+      return true;
+    }
+    
+    function showPhoneError(message) {
+      phoneError.textContent = message;
+      phoneError.classList.remove('hidden');
+      phoneInput.classList.add('border-red-500');
+      navigator.vibrate([500]);
+    }
+  
+    function getErrorMessage(errorCode, countryName) {
+      const errorMap = {
+        0: `El número no es válido para ${countryName}`,
+        1: `Número inválido para ${countryName}`,
+        2: `Código de país no válido`,
+        3: `Número demasiado corto para ${countryName}`,
+        4: `Número demasiado largo para ${countryName}`,
+        5: `Número inválido`
+      };
+      return errorMap[errorCode] || `Número no válido para ${countryName}`;
+    }
+  
+    // Validación en tiempo real
+    phoneInput.addEventListener('blur', validatePhoneNumber);
+    phoneInput.addEventListener('change', validatePhoneNumber);
+    phoneInput.addEventListener('keyup', function() {
+      setTimeout(validatePhoneNumber, 300);
+    });
+  
+    $(document).ready(function() {
+      lucide.createIcons();
+      
+      $("#login-form").submit(function(e) {
+        e.preventDefault();
+        
+        const errorBox = $("#error-box");
+        const errorMessage = $("#error-message");
+        const loginForm = $(this);
+        
+        errorBox.hide();
+        phoneError.classList.add('hidden');
+        
+        if (!validatePhoneNumber()) {
+          errorMessage.text("Por favor corrige el número de teléfono");
+          errorBox.show();
+          navigator.vibrate([500]);
+          phoneInput.focus();
+          return;
+        }
+  
+        const phone = iti.getNumber();
+        const password = $("#password").val().trim();
+  
+        if (!password) {
+          errorMessage.text("Por favor ingresa tu contraseña");
+          errorBox.show();
+          $("#password").focus();
+          navigator.vibrate([500]);
+          return;
+        }
+  
+        loginForm.addClass("opacity-75 pointer-events-none");
+        $("#submit-button").html('<i data-lucide="loader" class="animate-spin mr-2"></i> Validando...');
+        lucide.createIcons();
+    
+        $.ajax({
+          type: "POST",
+          url: "/login",
+          data: {
+            usuario: phone,
+            password: password
+          },
+          success: function(res) {
+            if (res.success) {
+              loginForm.html(`
+                <div class="text-center">
+                  <i data-lucide="check-circle" class="w-16 h-16 text-emerald-400 mx-auto mb-4"></i>
+                  <h3 class="text-xl font-bold text-white">¡Inicio de sesión exitoso!</h3>
+                  <p class="text-gray-400 mt-2">Redirigiendo al panel de administración...</p>
+                </div>
+              `);
+              lucide.createIcons();
+              
+              setTimeout(() => {
+                window.location.href = res.ruta;
+              }, 2000);
+              
+            } else {
+              errorMessage.text(res.msg || "Credenciales incorrectas");
+              errorBox.show();
+            }
+          },
+          error: function(xhr) {
+            let errorMsg = "Error en la solicitud al servidor";
+            if (xhr.responseJSON && xhr.responseJSON.error) {
+              errorMsg = xhr.responseJSON.error;
+            }
+            errorMessage.text(errorMsg);
+            errorBox.show();
+            navigator.vibrate([500]);
+          },
+          complete: function() {
+            loginForm.removeClass("opacity-75 pointer-events-none");
+            $("#submit-button").html("Iniciar Sesión");
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+</head>
+<body>
+    <h1>Bienvenido, <%= user.first_name %>!</h1>
+    <p>ID de Usuario: <%= user.id %></p>
+    <p>Nombre de Usuario: <%= user.username %></p>
+    <img src="<%= user.photo_url %>" alt="Foto de perfil">
+    <br>
+    <a href="/">Cerrar Sesión</a>
+</body>
+</html>

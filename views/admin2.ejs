@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin - Agregar Partidos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-4">
+  <div class="max-w-2xl mx-auto bg-gray-800 p-6 rounded-lg">
+    <h2 class="text-xl font-semibold mb-4 text-center">Agregar Partidos</h2>
+
+    <form action="/newMatch/add-matches" method="POST" id="partidosForm" class="space-y-6">
+
+      <!-- Contenedor de todos los formularios de partidos -->
+      <div id="partidosContainer"></div>
+
+      <!-- Botón para agregar otro partido -->
+      <div class="text-center">
+        <button type="button" id="agregarBtn"
+          class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white font-semibold">
+          + Agregar otro encuentro
+        </button>
+      </div>
+
+      <!-- Enviar todos -->
+      <div class="text-center mt-4">
+        <button type="submit"
+          class="bg-green-500 hover:bg-green-600 px-6 py-2 rounded text-white font-bold text-lg">
+          Guardar todos
+        </button>
+      </div>
+    </form>
+    <button id="updateResultsBtn" class="w-full md:w-auto flex items-center justify-center gap-2 bg-yellow-400 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-yellow-500 transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.664 0l3.18-3.185m-3.18-3.182l-3.182-3.182a8.25 8.25 0 00-11.664 0l-3.18 3.183" />
+            </svg>
+            Actualizar resultados
+        </button>
+  </div>
+  
+  <!-- Modal de mensaje -->
+<div id="modal" class="fixed inset-0 items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+  <div class="bg-white rounded-xl p-6 w-80 text-center shadow-xl">
+    <h2 class="text-xl font-semibold text-green-600 mb-2">✅ Listo</h2>
+    <p id="modalMessage" class="text-gray-700 mb-4"></p>
+    <button onclick="document.getElementById('modal').classList.add('hidden')" class="bg-green-600 text-white px-4 py-2 rounded">
+      Cerrar
+    </button>
+  </div>
+</div>
+
+  <script>
+    let contador = 0;
+    const mercados = ['1', 'X', '2', '12', '1X', 'X2', 'GG', 'NG', 'Over', 'Under'];
+
+    function crearFormularioPartido(id) {
+      const div = document.createElement('div');
+      div.className = 'bg-gray-700 p-4 rounded space-y-3';
+      div.innerHTML = `
+        <h3 class="text-lg font-bold text-green-400 mb-2">Encuentro ${id + 1}</h3>
+        <div>
+          <label class="block text-sm mb-1">Fecha (MM-DD)</label>
+          <input type="text" name="partidos[${id}][fecha]" required placeholder="Ej: 07-13"
+            class="w-full p-2 rounded bg-gray-800 border border-gray-600">
+        </div>
+        <div class="flex gap-2">
+          <div class="flex-1">
+            <label class="block text-sm mb-1">ID SofaScore</label>
+            <input type="text" name="partidos[${id}][eventId]" required
+              class="w-full p-2 rounded bg-gray-800 border border-gray-600">
+          </div>
+          <div class="flex-1">
+            <label class="block text-sm mb-1">ID FlashScore</label>
+            <input type="text" name="partidos[${id}][eventIdFl]" required
+              class="w-full p-2 rounded bg-gray-800 border border-gray-600">
+          </div>
+        </div>
+        <div>
+          <p class="text-sm mb-1">Selecciona Mercados:</p>
+          <div class="grid grid-cols-2 gap-2">
+            ${mercados.map(m => `
+              <div class="flex items-center gap-2">
+                <input type="checkbox" name="partidos[${id}][mercados][${m}][activo]" id="chk-${id}-${m}" class="accent-green-500">
+                <label for="chk-${id}-${m}">${m}</label>
+                <input type="text" name="partidos[${id}][mercados][${m}][cuota]" placeholder="Cuota"
+                  class="cuota-input hidden w-20 p-1 rounded bg-gray-800 border border-gray-600 text-sm">
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      // agregar a DOM
+      document.getElementById('partidosContainer').appendChild(div);
+
+      // activar lógica de mostrar cuota solo si está seleccionado
+      mercados.forEach(m => {
+        const checkbox = div.querySelector(`#chk-${id}-${m}`);
+        const cuotaInput = checkbox.parentElement.querySelector('input[type="text"]');
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) {
+            cuotaInput.classList.remove('hidden');
+            cuotaInput.required = true;
+          } else {
+            cuotaInput.classList.add('hidden');
+            cuotaInput.required = false;
+          }
+        });
+      });
+    }
+
+    document.getElementById('agregarBtn').addEventListener('click', () => {
+      crearFormularioPartido(contador);
+      contador++;
+    });
+
+    // agregar el primero al cargar
+    crearFormularioPartido(contador);
+    contador++;
+    
+    document.getElementById('updateResultsBtn').addEventListener('click', async (event) => {
+      const btn = event.currentTarget;
+      const originalContent = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="animate-spin h-5 w-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Actualizando...</span>`;
+      try {
+        const res = await fetch('/api/view-data2', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showError(data.message || "Actualizado con éxito");
+        } else {
+          showError(data.message || "Error al actualizar");
+        }
+      } catch (e) {
+        console.error("Error al actualizar resultados:", e);
+        showError("Error de conexión al intentar actualizar los resultados.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+      }
+    });
+
+function showError(message) {
+  const modal = document.getElementById('modal');
+  const msg = document.getElementById('modalMessage');
+  msg.textContent = message;
+  modal.classList.remove('hidden');
+  setTimeout(() => modal.classList.add('hidden'), 3000);
+}
+  </script>
+</body>
+</html>

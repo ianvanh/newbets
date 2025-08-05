@@ -1,0 +1,88 @@
+<%- include('partials/head') %>
+
+<main>
+  <section>
+    <div class="hero-bg">
+      <div class="container mx-auto px-4 lg:px-6 py-10 text-center text-white">
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">Historial de semanas disponibles.</h1>
+        <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+           Accede a una semana para ver los resultados por días.
+        </p>
+      </div>
+    </div>
+    
+    <div class="container mx-auto px-4 lg:px-6 py-12">
+      <!-- Header de la Página -->
+      <div class="flex mb-4">
+        <i data-lucide="calendar-days" class="mr-2"></i>
+        <strong>
+          Total semanas: <%= semanas.length %>
+        </strong>
+      </div>
+      <% if (semanas.length === 0) { %>
+      <!-- Mensaje si no hay semanas -->
+      <div class="bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 p-4 rounded-lg flex items-center">
+          <i data-lucide="alert-triangle" class="w-6 h-6 mr-3 flex-shrink-0"></i>
+          <div>No hay partidos disponibles para mostrar en este momento.</div>
+      </div>
+      <% } else { %>
+      <!-- Tarjetas de Semanas -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% semanas.forEach(semana => { %>
+        <% const finalizados = semana.resumen.partidosFinalizados; %>
+        <% const totalPartidos = semana.resumen.totalPartidos; %>
+        <div class="card rounded-xl overflow-hidden flex flex-col h-full border border-gray-700 hover:border-emerald-500/50 transition-all duration-300">
+          <!-- Header de la Tarjeta -->
+          <div class="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-800/50">
+            <h2 class="text-lg font-bold text-white"> <%= semana.codigoSemana.split('-W')[0]%> - Semana <%= semana.codigoSemana.split('-W')[1] %></h2>
+            <span class="text-xs font-bold px-2 py-1 rounded-full <%= finalizados === totalPartidos ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-700' %>">
+              <%= finalizados %> / <%= totalPartidos %> Fin.
+            </span>
+          </div>
+          <!-- Cuerpo de la Tarjeta -->
+          <div class="p-5 flex-grow space-y-4">
+            <p class="text-gray-400 text-sm flex items-center">
+              <i data-lucide="calendar-range" class="w-4 h-4 mr-2"></i> 
+              Del <%= semana.fechaInicio %> al <%= semana.fechaFin %>
+            </p>
+            <!-- Barra de Progreso Personalizada con Tailwind CSS -->
+            <div class="space-y-2">
+              <h3 class="text-sm font-semibold text-gray-300">Distribución de resultados:</h3>
+              <div class="w-full bg-gray-700 rounded-full h-6 flex overflow-hidden text-white text-xs font-bold shadow-inner">
+                <!-- Segmento 1 (Local) -->
+                <div class="flex items-center justify-center bg-emerald-500 transition-all duration-500" 
+                     style="width: <%= semana.resumen.porcentajeAciertos['1'] %>%" 
+                     title="Local: <%= semana.resumen.porcentajeAciertos['1'] %>%">
+                  <% if (semana.resumen.porcentajeAciertos['1'] > 10) { %>1: <%= semana.resumen.porcentajeAciertos['1'] %>%<% } %>
+                </div>
+                <!-- Segmento X (Empate) -->
+                <div class="flex items-center justify-center bg-blue-500 transition-all duration-500 border-x-2 border-gray-900/50" 
+                     style="width: <%= semana.resumen.porcentajeAciertos['X'] %>%"
+                     title="Empate: <%= semana.resumen.porcentajeAciertos['X'] %>%">
+                  <% if (semana.resumen.porcentajeAciertos['X'] > 10) { %>X: <%= semana.resumen.porcentajeAciertos['X'] %>%<% } %>
+                </div>
+                <!-- Segmento 2 (Visitante) -->
+                <div class="flex items-center justify-center bg-red-500 transition-all duration-500" 
+                     style="width: <%= semana.resumen.porcentajeAciertos['2'] %>%"
+                     title="Visitante: <%= semana.resumen.porcentajeAciertos['2'] %>%">
+                  <% if (semana.resumen.porcentajeAciertos['2'] > 10) { %>2: <%= semana.resumen.porcentajeAciertos['2'] %>%<% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Footer de la Tarjeta -->
+          <div class="p-4 bg-gray-800/30 mt-auto">
+            <a href="/semana/<%= semana.codigoSemana %>" class="btn-primary w-full py-2.5 rounded-lg font-semibold flex items-center justify-center text-sm transition-transform transform hover:scale-105">
+              <i data-lucide="eye" class="w-4 h-4 mr-2"></i> Ver Partidos de la Semana
+            </a>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+      <% } %>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<%- include('partials/footer') %>

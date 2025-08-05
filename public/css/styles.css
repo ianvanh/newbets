@@ -1,0 +1,192 @@
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #111827; /* bg-gray-900 */
+    color: #d1d5db; /* text-gray-300 */
+}
+/*
+.main-content {
+    display: none;
+}
+.main-content.active {
+    display: block;
+}
+*/
+.nav-link {
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+.nav-link.active,
+.nav-link:hover {
+    color: #34d399; /* emerald-400 */
+    border-bottom-color: #34d399;
+}
+.hero-bg {
+    background-image: linear-gradient(
+            rgba(17, 24, 39, 0.8),
+            rgba(17, 24, 39, 1)
+        ),
+        url("https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=2940&auto=format&fit=crop");
+    background-size: cover;
+    background-position: center;
+}
+.card {
+    background-color: #1f2937; /* bg-gray-800 */
+    border: 1px solid #374151; /* border-gray-700 */
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(52, 211, 153, 0.1);
+}
+.btn-primary {
+    background-color: #10b981; /* emerald-500 */
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #059669; /* emerald-600 */
+}
+.btn-secondary {
+    background-color: #374151; /* gray-700 */
+    color: white;
+}
+.btn-secondary:hover {
+    background-color: #4b5563; /* gray-600 */
+}
+.step-number {
+    background-color: #10b981;
+    color: #111827;
+}
+.tab-button {
+    background-color: #374151; /* gray-700 */
+    border-bottom: 3px solid transparent;
+}
+.tab-button.active {
+    color: #34d399; /* emerald-400 */
+    border-bottom-color: #34d399; /* emerald-400 */
+    background-color: #1f2937; /* gray-800 */
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+.goals-badge {
+    font-size: 0.9rem;
+    padding: 3px 10px;
+}
+/*
+#mobile-menu {
+    transition: all 0.3s ease;
+    transform-origin: top;
+    opacity: 1;
+    max-height: 1000px;
+}
+
+#mobile-menu.hidden {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+}
+*/
+/* login */
+.login-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=2940&auto=format&fit=crop");
+    background-size: cover;
+    background-position: center;
+    filter: blur(8px) brightness(0.4);
+    z-index: -1;
+}
+.form-input {
+    background-color: #374151; /* bg-gray-700 */
+    border-color: #4b5563; /* border-gray-600 */
+    color: #d1d5db; /* text-gray-300 */
+}
+.form-input:focus {
+    outline: none;
+    border-color: #10b981; /* emerald-500 */
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5);
+}
+.btn-primary {
+    background-color: #10b981; /* emerald-500 */
+    color: white;
+    transition: background-color 0.3s ease;
+}
+.btn-primary:hover {
+    background-color: #059669; /* emerald-600 */
+}
+#error-box {
+    display: none;
+    background-color: #ef4444; /* red-500 */
+    color: white;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* privacidad */
+.content-container h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff; 
+  margin-top: 2rem; 
+  margin-bottom: 1rem; 
+  border-bottom: 1px solid #374151; 
+  padding-bottom: 0.5rem;
+}
+.content-container p, 
+.content-container ul {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+.content-container li { 
+  margin-left: 1.5rem; 
+  list-style-type: disc;
+}
+.content-container a { 
+  color: #34d399; 
+  text-decoration: 
+  underline; 
+}
+
+/* pronosticos */
+.pagination-btn {
+      background-color: rgb(31 41 55);
+      color: white;
+      padding: 0.5rem;
+      border-radius: 9999px;
+      width: 2.5rem;
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .pagination-btn:hover:not(:disabled) {
+      background-color: rgb(55 65 81);
+    }
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-spinner {
+      animation: spin 1s linear infinite;
+      border-radius: 9999px;
+      height: 2rem;
+      width: 2rem;
+      border-top: 2px solid rgb(59 130 246);
+      border-bottom: 2px solid rgb(59 130 246);
+    }

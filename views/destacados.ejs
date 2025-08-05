@@ -1,0 +1,90 @@
+<%- include('partials/head') %>
+
+<main>
+  <section>
+    <div class="hero-bg">
+      <div class="container mx-auto px-4 lg:px-6 py-10 text-center text-white">
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight"><%= name_page.toLowerCase().split(' ').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ') %></h1>
+        <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+           Pronósticos de <%= name_page %> para hoy
+        </p>
+      </div>
+    </div>
+    
+    <div class="max-w-3xl mx-auto space-y-2">
+      <% if (partidos.length === 0) { %>
+        <div class="text-center">
+          <p class="text-gray-300 font-bold">
+            Calculando las mejores jugadas.
+          </p>
+          <dotlottie-player
+            src="https://lottie.host/9192a5b3-824c-4484-861a-7caa917ca8b3/8C3TsRZCag.json"
+            background="transparent"
+            speed="1"
+            style="width: 300px; height: 300px; margin: 0 auto;" class="mx-auto"
+            loop
+            autoplay>
+          </dotlottie-player>
+        </div>
+      <% } else { %>
+        <% partidos.forEach(match => { %>
+        <!-- Tarjeta del partido -->
+        <div class="relative flex items-center bg-gray-800 px-3 py-2 rounded-lg overflow-hidden">
+          <!-- Indicador de resultado -->
+          <% if (match.resultadoDestacado === 'ganado') { %>
+            <div class="absolute top-0 right-0 h-full w-2 bg-green-500 rounded-r-lg"></div>
+          <% } else if (match.resultadoDestacado === 'perdido') { %>
+            <div class="absolute top-0 right-0 h-full w-2 bg-red-500 rounded-r-lg"></div>
+          <% } else { %>
+            <div class="absolute top-0 right-0 h-full w-2 bg-yellow-500 rounded-r-lg"></div>
+          <% } %>
+          
+          <!-- Hora -->
+          <div class="w-[40px] text-center text-sm mr-2">
+            <div><%= match.dateTime %></div>
+          </div>
+          <!-- Equipos -->
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <img src="<%= match.local.logo %>" class="w-6 h-6 flex-shrink-0" />
+              <span class="w-[150px] truncate text-sm"><%= match.local.nombre %></span>
+            </div>
+            <div class="flex items-center gap-2">
+              <img src="<%= match.visitante.logo %>" class="w-6 h-6 flex-shrink-0" />
+              <span class="w-[150px] truncate text-sm"><%= match.visitante.nombre %></span>
+            </div>
+          </div>
+    
+          <!-- Goles -->
+          <div class="w-[40px] text-center font-semibold text-sm ml-2">
+            <% if (match.resultadoDestacado !== 'pendiente') { %>
+            <div><%= match.local.golesLocal %></div>
+            <div><%= match.visitante.golesVisitante %></div>
+            <% } %>
+          </div>
+    
+          <!-- Mercados y cuotas -->
+            <div class="w-[100px] text-xs text-center ml-2">
+              <div class="text-center <%= match.resultadoDestacado === 'ganado' ? 'text-emerald-400' : (match.resultadoDestacado === 'perdido' ? 'text-red-400' : 'text-gray-400') %> mr-2">
+                <%- (match.mercadoDestacado === 'O15') ? 'Número de goles<br>+1.5'
+                  : (match.mercadoDestacado === 'U15') ? 'Número de goles<br>-1.5'
+                  : (match.mercadoDestacado === 'O25') ? 'Número de goles<br>+2.5'
+                  : (match.mercadoDestacado === 'U25') ? 'Número de goles<br>-2.5'
+                  : (match.mercadoDestacado === 'O35') ? 'Número de goles<br>+3.5'
+                  : (match.mercadoDestacado === 'U35') ? 'Número de goles<br>-3.5'
+                  : (match.mercadoDestacado === '12') ? 'Doble oportunidad<br> 12'
+                  : (match.mercadoDestacado === '1X') ? 'Doble oportunidad<br> 1X'
+                  : (match.mercadoDestacado === 'X2') ? 'Doble oportunidad<br> X2'
+                  : match.mercadoDestacado %>
+              </div>
+            </div>
+            <div class="text-sm font-semibold">
+              <%= match.cuotaDestacada %>
+            </div>
+        </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </section>
+</main>
+<%- include('partials/footer') %> 
