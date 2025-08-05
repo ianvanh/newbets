@@ -271,7 +271,7 @@ app.get('/semana/:semana', requireLogin, async (req, res) => {
   }
 });
 
-app.get('/pronosticos/destacados', async (req, res) => {
+app.get('/pronosticos/destacados', requireLogin, async (req, res) => {
   const dia = req.query.fecha;
   const partidos = await obtenerPartidosDestacados(dia)
   res.render('destacados', {
@@ -462,11 +462,12 @@ setInterval(() => {
 app.use((req, res) => {
   res.status(404).render("errores", {
     errorMessage: "La página que buscas no está en juego.",
-    ...info
+    info,
+    name_page: "Error"
   });
 });
 
-const IP = '192.168.101.8';
+const IP = '';
 app.listen(PORT, () => {
   console.log(`Online on port: ${PORT}`);
 });

@@ -1,49 +1,73 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Error - Newbets</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    body {
-      background: linear-gradient(to right, #16222A, #3A6073);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      text-align: center;
-    }
-    .error-card {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(10px);
-      animation: fadeIn 0.8s ease-in-out;
-      max-width: 600px;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .icon {
-      font-size: 80px;
-      margin-bottom: 20px;
-    }
-    .btn-home {
-      margin-top: 25px;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title><%= info.name_page %> | Login</title>
+
+  <meta name="description" content="<%= info.desc %>">
+  <meta name="keywords" content="apuestas deportivas, apuestas en vivo, pronósticos, cuotas, fútbol, guías de apuestas, juego responsable">
+  <meta name="author" content="<%= info.author %>">
+  <meta name="theme-color" content="#10b981">
+
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+  <link rel="canonical" href="<%= info.dominio %>">
+
+  <meta property="og:title" content="<%= info.name_page %>">
+  <meta property="og:description" content="<%= info.desc %>.">
+
+  <meta property="og:image" content="<%= info.dominio %>imagen-social-preview.jpg">
+  <meta property="og:image:alt" content="Balon de futbol.">
+  <meta property="og:url" content="<%= info.dominio %>">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="<%= info.name_page %>">
+  <meta property="og:locale" content="es_ES">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= info.name_page %>">
+  <meta name="twitter:description" content="<%= info.desc %>">
+  <meta name="twitter:image" content="<%= info.dominio %>imagen-twitter-preview.jpg">
+  <meta name="twitter:image:alt" content="Balon de futbol.">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#111827">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <link rel="icon" href="/images/default.png" type="image/png">
+  <link rel="apple-touch-icon" href="/images/default.png">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body>
-  <div class="error-card">
-    <div class="icon">🏟️</div>
-    <h1 class="display-4">Error</h1>
-    <p class="lead mb-4"><%= errorMessage %></p>
-    <a href="/" class="btn btn-outline-light btn-lg btn-home">Volver a los partidos</a>
+<body class="text-gray-300">
+  <div class="fixed inset-0 overflow-hidden flex items-center justify-center p-4 login-container">
+    <div class="w-full max-w-md bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-2xl p-8 border border-gray-700">
+      <div class="text-center mb-8">
+        <a href="/" class="inline-flex items-center justify-center text-3xl font-bold text-white mb-2">
+          <%= info.name_page.slice(0, 3) %><span class="text-emerald-400"><%= info.name_page.slice(-4) %></span>
+        </a>
+        <p class="text-gray-400">Tenemos un error</p>
+      </div>
+
+      <div class="text-center bg-red-500/20 p-8 rounded border-red-500 mb-4">
+        <a class="inline-flex items-center justify-center mb-2">
+          <i data-lucide="shield-alert" class="text-red-500"></i>
+        </a>
+        <p class="text-red-500 text-sm text-center mt-1"><%= errorMessage %></p>
+      </div>
+
+      <div class="text-center mt-8 text-sm">
+        <a href="/" class="text-gray-400 hover:text-emerald-400 transition">&larr; Ir a la página de inicio</a>
+      </div>
+    </div>
   </div>
+  <script>
+    lucide.createIcons()
+  </script>
 </body>
 </html>
