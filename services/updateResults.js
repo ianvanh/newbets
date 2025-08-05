@@ -128,17 +128,24 @@ const cachePronosticos = async () => {
   }
 };
 const cachePrincipales = async () => {
-  function getToday() { 
-    return moment().tz('America/Bogota').format('YYYY-MM-DD');
-  }
-  const GITHUB_URL = `https://raw.githubusercontent.com/ianvanh/NB_data/main/principales.json`;
   const cacheKey = `principalesJSON:principales`;
+  const GITHUB_URL = `https://raw.githubusercontent.com/ianvanh/NB_data/main/principales.json`;
 
   try {
     const response = await axios.get(GITHUB_URL);
-    const data = response.data;
+    const dataCompleta = response.data;
+    // Obtener semana actual y pasada
+    const semanaActual = moment().tz('America/Bogota').format('GGGG-[W]WW');
+    const semanaPasada = moment().tz('America/Bogota').subtract(1, 'week').format('GGGG-[W]WW');
+    // Filtrar solo esas semanas
+    const dataFiltrada = {};
+    [semanaActual, semanaPasada].forEach(sem => {
+      if (dataCompleta[sem]) {
+        dataFiltrada[sem] = dataCompleta[sem];
+      }
+    });
 
-    await redisClient.setEx(cacheKey, 60 * 60 * 120, JSON.stringify(data)); // cache por 5 dias
+    await redisClient.setEx(cacheKey, 60 * 60 * 24 * 5, JSON.stringify(dataFiltrada)); // cache por 5 dias
     console.log('Caché actualizada manualmente para principales');
     return true;
   } catch (error) {

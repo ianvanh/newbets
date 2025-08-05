@@ -73,7 +73,7 @@ app.get('/', async (req, res) => {
     totalUsers
   })
 })
-app.get('/best-play', async (req, res) => {
+app.get('/best-play', requireLogin, async (req, res) => {
   try {
     const db = await principal();
     const weekKey = req.query.semana || getWeekKey();
