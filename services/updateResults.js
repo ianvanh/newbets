@@ -107,7 +107,7 @@ async function updateResult2() {
 }
 
 const redisClient = require('./redisClient');
-const cachePronisticos = async () => {
+const cachePronosticos = async () => {
   function getToday() { 
     return moment().tz('America/Bogota').format('YYYY-MM-DD');
   }
@@ -127,5 +127,25 @@ const cachePronisticos = async () => {
     return false;
   }
 };
+const cachePrincipales = async () => {
+  function getToday() { 
+    return moment().tz('America/Bogota').format('YYYY-MM-DD');
+  }
+  const today = getToday();
+  const GITHUB_URL = `https://raw.githubusercontent.com/ianvanh/NB_data/main/principales.json`;
+  const cacheKey = `principalesJSON:${today}`;
 
-module.exports = { updateResult2, cachePronisticos }
+  try {
+    const response = await axios.get(GITHUB_URL);
+    const data = response.data;
+
+    await redisClient.setEx(cacheKey, 60 * 60 * 120, JSON.stringify(data)); // cache por 24h
+    console.log(`✅ Caché actualizada manualmente para ${today}`);
+    return true;
+  } catch (error) {
+    console.error(`❌ Error actualizando caché:`, error.message);
+    return false;
+  }
+};
+
+module.exports = { updateResult2, cachePronosticos, cachePrincipales}

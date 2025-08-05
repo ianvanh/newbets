@@ -168,7 +168,7 @@ exports.update = async (req, res) => {
     res.status(500).json({ success: false, error: 'Error al actualizar los resultados' });
   }
 }
-const { updateResult2, cachePronisticos } = require('../services/updateResults');
+const { updateResult2, cachePronosticos, cachePrincipales } = require('../services/updateResults');
 exports.update2 = async (req, res) => {
   try {
     await updateResult2();
@@ -185,7 +185,8 @@ exports.updateCache = async (req, res) => {
     return res.status(403).json({ ok: false, msg: 'No autorizado' });
   }
   try {
-    await cachePronisticos();
+    await cachePronosticos();
+    await cachePrincipales();
     res.json({ success: true, message: 'Cache actualizada correctamente' });
   } catch (error) {
     console.error('Error al actualizar resultados:', error);
