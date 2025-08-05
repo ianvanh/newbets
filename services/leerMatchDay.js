@@ -29,7 +29,7 @@ const pronosticos = async (fecha = null) => {
   }
 };
 const principal = async () => {
-  const cacheKey = 'principalesJSON:filtrado';
+  const cacheKey = 'principalesJSON:principales';
   const GITHUB_URL = `https://raw.githubusercontent.com/ianvanh/NB_data/main/principales.json`;
 
   // Buscar en cache

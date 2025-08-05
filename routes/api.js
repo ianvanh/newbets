@@ -17,5 +17,6 @@ router.post('/view-data2', matchesController.update2);
 // pronosticos
 router.get('/pronosticos', matchesController.getPronosticosData);
 router.get('/cache', matchesController.updateCache);
+router.get('/cache2', matchesController.updateCache2);
 
 module.exports = router;

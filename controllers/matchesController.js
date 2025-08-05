@@ -186,6 +186,18 @@ exports.updateCache = async (req, res) => {
   }
   try {
     await cachePronosticos();
+    res.json({ success: true, message: 'Cache actualizada correctamente' });
+  } catch (error) {
+    console.error('Error al actualizar resultados:', error);
+    res.status(500).json({ success: false, error: 'Error al actualizar los resultados' });
+  }
+}
+exports.updateCache2 = async (req, res) => {
+  const token = req.query.token;
+  if (token !== process.env.SECRET) {
+    return res.status(403).json({ ok: false, msg: 'No autorizado' });
+  }
+  try {
     await cachePrincipales();
     res.json({ success: true, message: 'Cache actualizada correctamente' });
   } catch (error) {
