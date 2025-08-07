@@ -46,7 +46,7 @@ const checkMobile = (req, res, next) => {
   const ua = req.headers['user-agent'] || '';
   const esMovil = /mobile|android|iphone|ipad|phone/i.test(ua);
   if (!esMovil && !/bot|facebook|whatsapp/i.test(ua)) {
-    return res.render("errores", { errorMessage: "Solo disponible para móviles." });
+    return res.render("errores", { info, errorMessage: "Solo disponible para móviles." });
   }
   next();
 };
