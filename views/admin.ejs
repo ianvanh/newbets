@@ -398,7 +398,7 @@
         </svg>
         <span>Actualizando...</span>`;
       try {
-        const res = await fetch('/api/cache', { method: 'POST' });
+        const res = await fetch('/api/cache2', { method: 'POST' });
         const data = await res.json();
         if (data.success) {
           showError(data.message || "Actualizado con éxito"); // Usamos el modal para todo tipo de feedback

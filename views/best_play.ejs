@@ -51,7 +51,7 @@
               </div>
               <div class="flex justify-around items-center text-center my-4">
                 <div class="flex-1 flex flex-col items-center">
-                  <img src="/api/team-logo/<%= match.homeTeam.id %>" alt="<%= match.homeTeam.name %>" class="h-14 w-14 md:h-16 md:w-16 object-contain mb-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1f2937/d1d5db?text=BM';">
+                  <img src="https://img.sofascore.com/api/v1/team/<%= match.homeTeam.id %>/image" alt="<%= match.homeTeam.name %>" class="h-14 w-14 md:h-16 md:w-16 object-contain mb-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1f2937/d1d5db?text=BM';">
                   <p class="font-bold text-white text-sm md:text-base">
                     <%= match.homeTeam.name %>
                   </p>
@@ -62,7 +62,7 @@
                   </p>
                 </div>
                 <div class="flex-1 flex flex-col items-center">
-                  <img src="/api/team-logo/<%= match.awayTeam.id %>" alt="<%= match.awayTeam.name %>" class="h-14 w-14 md:h-16 md:w-16 object-contain mb-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1f2937/d1d5db?text=BM';">
+                  <img src="https://img.sofascore.com/api/v1/team/<%= match.awayTeam.id %>/image" alt="<%= match.awayTeam.name %>" class="h-14 w-14 md:h-16 md:w-16 object-contain mb-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1f2937/d1d5db?text=BM';">
                   <p class="font-bold text-white text-sm md:text-base">
                     <%= match.awayTeam.name %>
                   </p>
@@ -101,7 +101,7 @@
             </div>
             <div class="flex justify-around items-center text-center my-4">
               <div class="flex-1 flex flex-col items-center">
-                <img src="/api/team-logo/<%= bets.optional.homeTeam.id %>" alt="<%= bets.optional.homeTeam.name %>" class="h-14 w-14 md:h-16 md:w-16 object-contain mb-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1f2937/d1d5db?text=BM';">
+                <img src="https://img.sofascore.com/api/v1/team/<%= bets.optional.homeTeam.id %>/image" alt="<%= bets.optional.homeTeam.name %>" class="h-14 w-14 md:h-16 md:w-16 object-contain mb-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1f2937/d1d5db?text=BM';">
                 <p class="font-bold text-white text-sm md:text-base">
                   <%= bets.optional.homeTeam.name %>
                 </p>
@@ -112,7 +112,7 @@
                 </p>
               </div>
               <div class="flex-1 flex flex-col items-center">
-                <img src="/api/team-logo/<%= bets.optional.awayTeam.id %>" alt="<%= bets.optional.awayTeam.name %>" class="h-14 w-14 md:h-16 md:w-16 object-contain mb-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1f2937/d1d5db?text=BM';">
+                <img src="https://img.sofascore.com/api/v1/team/<%= bets.optional.awayTeam.id %>/image" alt="<%= bets.optional.awayTeam.name %>" class="h-14 w-14 md:h-16 md:w-16 object-contain mb-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1f2937/d1d5db?text=BM';">
                 <p class="font-bold text-white text-sm md:text-base">
                   <%= bets.optional.awayTeam.name %>
                 </p>

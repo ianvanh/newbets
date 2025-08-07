@@ -137,7 +137,7 @@ exports.getTeamLogo = async (req, res) => {
       return res.send(logoData);
     }
     
-    res.sendFile(path.join(__dirname, '../public/images/default.png'));
+    res.sendFile(path.join(__dirname, `../public/images/${teamId}.png`));
   } catch (error) {
     res.sendFile(path.join(__dirname, '../public/images/default.png'));
   }
