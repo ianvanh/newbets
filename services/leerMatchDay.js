@@ -2,14 +2,14 @@ const { saveCache, loadCache } = require('./redisLoad');
 const axios = require('axios');
 const moment = require('moment-timezone');
 
-function getTodayDate(date = null) {
+function todayDate(date = null) {
   return date
   ? moment(date).tz('America/Bogota').format('YYYY-MM-DD')
   : moment().tz('America/Bogota').format('YYYY-MM-DD');
 }
 
 const pronosticos = async (fecha = null) => {
-  const today = getTodayDate(fecha);
+  const today = todayDate(fecha);
   const cacheKey = `partidosJSON:${today}`;
   const GITHUB_URL = `https://raw.githubusercontent.com/ianvanh/NB_data/main/${today}.json`;
 
@@ -62,6 +62,7 @@ const principal = async () => {
 };
 
 module.exports = {
+  todayDate,
   pronosticos,
   principal
 }

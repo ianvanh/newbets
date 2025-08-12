@@ -1,0 +1,36 @@
+<%- include('partials/head') %>
+
+  <div class="max-w-5xl mx-auto py-8">
+    <h1 class="text-3xl font-bold mb-6 text-center">Partidos de hoy</h1>
+
+    <% if (partidos.length === 0) { %>
+      <p class="text-center text-gray-500">No hay partidos disponibles.</p>
+    <% } else { %>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <% partidos.forEach(partido => { %>
+          <a href="/match/<%= partido.shortId %>" class="block bg-white p-4 rounded-xl shadow hover:shadow-lg transition">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-4">
+                <img src="<%= partido.local.logo %>" alt="<%= partido.local.nombre %>" class="w-10 h-10 object-contain">
+                <span class="font-semibold"><%= partido.local.nombre %></span>
+              </div>
+
+              <span class="text-lg font-bold">VS</span>
+
+              <div class="flex items-center space-x-4">
+                <span class="font-semibold"><%= partido.visitante.nombre %></span>
+                <img src="<%= partido.visitante.logo %>" alt="<%= partido.visitante.nombre %>" class="w-10 h-10 object-contain">
+              </div>
+            </div>
+
+            <div class="mt-4 flex justify-between text-sm text-gray-500">
+              <span>Hora: <%= partido.dateTime %></span>
+              <span>Estado: <%= partido.estado %></span>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+
+<%- include('partials/footer') %>

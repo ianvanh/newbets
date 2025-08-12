@@ -3,5 +3,6 @@ data/
 
 .env
 all.txt
+cache.js
 package-lock.json
 test.js

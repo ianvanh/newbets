@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const dataPath = path.join(__dirname, '../data/bets.json');
+const dataPath = path.join(__dirname, '../data/principales.json');
 
 async function readBetsData() {
   try {

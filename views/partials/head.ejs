@@ -8,7 +8,7 @@
   <meta name="description" content="<%= info.desc %>">
   <meta name="keywords" content="apuestas deportivas, apuestas en vivo, pronósticos, cuotas, fútbol, guías de apuestas, juego responsable">
   <meta name="author" content="<%= info.author %>">
-  <meta name="theme-color" content="#10b981">
+  <meta name="theme-color" content="#111827">
 
   <meta name="robots" content="index, follow">
   <meta name="googlebot" content="index, follow">
@@ -18,7 +18,8 @@
   <meta property="og:description" content="<%= info.desc %>.">
 
   <meta property="og:image" content="<%= info.dominio %>/images/default.png">
-  <meta property="og:image:alt" content="Balon de futbol.">
+  <meta property="og:image:alt" content="<%= info.name_page %>">
+  <meta property="fb:app_id" content="<%= info.fb_app_id %>">
   <meta property="og:url" content="<%= info.dominio %>">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="<%= info.name_page %>">
@@ -28,7 +29,7 @@
   <meta name="twitter:title" content="<%= info.name_page %>">
   <meta name="twitter:description" content="<%= info.desc %>">
   <meta name="twitter:image" content="<%= info.dominio %>/images/default.png">
-  <meta name="twitter:image:alt" content="Balon de futbol.">
+  <meta name="twitter:image:alt" content="<%= info.name_page %>">
   <meta name="apple-mobile-web-app-status-bar-style" content="#111827">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
@@ -87,6 +88,7 @@
             <a href="/pronosticos/doble_oportunidad" class="block py-2 px-3 rounded-md hover:bg-gray-700 text-sm">Doble Oportunidad</a>
             <a href="/pronosticos/ambos_marcan" class="block py-2 px-3 rounded-md hover:bg-gray-700 text-sm">Ambos Marcan</a>
             <a href="/pronosticos/menos_mas_2-5" class="block py-2 px-3 rounded-md hover:bg-gray-700 text-sm">+/-: 2.5 Goles</a>
+            <a href="/pronosticos/menos_mas_3-5" class="block py-2 px-3 rounded-md hover:bg-gray-700 text-sm">+/-: 3.5 Goles</a>
           </div>
         </div>
         <% if (sesionIniciada) { %>

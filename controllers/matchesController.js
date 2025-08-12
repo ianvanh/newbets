@@ -185,7 +185,7 @@ exports.updateCache = async (req, res) => {
     return res.status(403).json({ ok: false, msg: 'No autorizado' });
   }
   try {
-    await cachePronosticos();
+    await updateResult();
     res.json({ success: true, message: 'Cache actualizada correctamente' });
   } catch (error) {
     console.error('Error al actualizar resultados:', error);

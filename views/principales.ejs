@@ -6,7 +6,7 @@
       <div class="container mx-auto px-4 lg:px-6 py-10 text-center text-white">
         <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight"><%= name_page.toLowerCase().split(' ').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ') %></h1>
         <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-           Pronósticos de <%= name_page %> para hoy
+           Pronósticos de <%= name_page %> goles para hoy.
         </p>
       </div>
     </div>
@@ -39,6 +39,10 @@
             <div class="absolute top-0 right-0 h-full w-2 bg-yellow-500 rounded-r-lg"></div>
           <% } %>
     
+          <!-- Hora -->
+          <div class="w-[40px] text-center text-sm mr-2">
+            <div><%= match.dateTime %></div>
+          </div>
           <!-- Equipos -->
           <div class="flex-1">
             <div class="flex items-center gap-2 mb-1">
@@ -50,7 +54,6 @@
               <span class="w-[150px] truncate text-sm"><%= match.visitante.nombre %></span>
             </div>
           </div>
-    
           <!-- Goles -->
           <div class="w-[40px] text-center font-semibold text-sm ml-2">
             <% if (match.resultados[match.mercadoUsado] !== 'pendiente') { %>
@@ -58,20 +61,21 @@
             <div><%= match.visitante.golesVisitante %></div>
             <% } %>
           </div>
-    
           <!-- Mercados y cuotas -->
           <% Object.keys(match.cuotas).forEach(mercado => { %>
-            <div class="w-[60px] text-xs text-center ml-2">
+            <div class="w-[100px] text-xs text-center ml-2">
               <div class="font-bold <%= match.resultados[mercado] === 'ganado' ? 'text-emerald-400' : (match.resultados[mercado] === 'perdido' ? 'text-red-400' : 'text-gray-400') %>">
                 <%= (mercado === 'GG') ? 'Sí'
                   : (mercado === 'NG') ? 'No'
                   : (mercado === 'O25') ? '+2.5'
                   : (mercado === 'U25') ? '-2.5'
+                  : (mercado === 'O35') ? '+3.5'
+                  : (mercado === 'U35') ? '-3.5'
                   : mercado %>
               </div>
-              <div class="text-sm font-semibold">
-                <%= match.cuotas[mercado] %>
-              </div>
+            </div>
+            <div class="text-sm font-semibold mr-1">
+              <%= match.cuotas[mercado] %>
             </div>
           <% }) %>
         </div>

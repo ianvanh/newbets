@@ -114,7 +114,7 @@ const filtrarPartidosPorMercadosB = async (fecha, mercadosDeseados = []) => {
 
     return {
       ...partido,
-      dateTime: partido.dateTime.split(',')[1].replace("a. m.", "a.m.").replace("p. m.", "p.m."),
+      dateTime: convertHour12To24(partido.dateTime.split(',')[1].replace("a. m.", "a.m.").replace("p. m.", "p.m.")),
       cuotas: cuotasFiltradas,
       resultados: resultadosFiltrados,
       mercadoUsado: mercadoElegido,

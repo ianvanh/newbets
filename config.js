@@ -4,7 +4,8 @@ module.exports = {
     author: 'IanVanh',
     name_page: 'NewBets',
     desc: 'Newbets, la mejor forma de ganarle al sistema, analisis de expertos, las mejores cuotas. Únete a la comunidad de apuestas deportivas más grande.',
-    dominio: 'https://newbets.onrender.com'
+    dominio: 'https://newbets.onrender.com',
+    fb_app_id: '1705732760145734',
   },
   github: {
     token: process.env.GITHUB_TOKEN || ''

@@ -43,13 +43,20 @@ app.use((req, res, next) => {
 });
 
 const checkMobile = (req, res, next) => {
-  const ua = req.headers['user-agent'] || '';
-  const esMovil = /mobile|android|iphone|ipad|phone/i.test(ua);
-  if (!esMovil && !/bot|facebook|whatsapp/i.test(ua)) {
-    return res.render("errores", { info, errorMessage: "Solo disponible para móviles." });
+  const ua = req.headers['user-agent']?.toLowerCase() || '';
+  const esMovil = /mobile|android|iphone|ipad|phone|ios|ipod|webos|blackberry|windows phone/i.test(ua);
+  const esBot = /facebookexternalhit|twitterbot|whatsapp|googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|pinterestbot/i.test(ua);
+  
+  if (esBot || esMovil) {
+    return next();
   }
-  next();
+  
+  res.render("errores", { 
+    info, 
+    errorMessage: "Esta página solo está disponible en dispositivos móviles." 
+  });
 };
+
 app.use(checkMobile);
 
 const apiRoutes = require('./routes/api');
@@ -313,6 +320,30 @@ app.get('/pronosticos/menos_mas_2-5', requireLogin, async (req, res) => {
   res.render('principales', {
     info,
     name_page: "más menos 2.5",
+    partidos
+  });
+});
+app.get('/pronosticos/menos_mas_3-5', requireLogin, async (req, res) => {
+  const dia = req.query.fecha;
+  const partidos = await filtrarPartidosPorMercadosB(dia, ['O35', 'U35']);
+  res.render('principales', {
+    info,
+    name_page: "más menos 3.5",
+    partidos
+  });
+});
+app.get('/pronosticos/encuentro', requireLogin, async (req, res) => {
+  const partidos = await pronosticos()
+  console.log(partidos)
+  /*
+  const partido = partidos.find(p => p.shortId === req.params.shortId);
+  if (!partido) {
+    return res.status(404).send('Partido no encontrado');
+  }
+  */
+  res.render('encuentro', {
+    info,
+    name_page: "Encuentro",
     partidos
   });
 });

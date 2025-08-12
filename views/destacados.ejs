@@ -54,15 +54,13 @@
               <span class="w-[150px] truncate text-xs"><%= match.visitante.nombre %></span>
             </div>
           </div>
-    
           <!-- Goles -->
-          <div class="w-[40px] text-center font-semibold text-sm ml-2">
+          <div class="w-[40px] text-center font-semibold text-sm ml-1">
             <% if (match.resultadoDestacado !== 'pendiente') { %>
             <div><%= match.local.golesLocal %></div>
             <div><%= match.visitante.golesVisitante %></div>
             <% } %>
           </div>
-    
           <!-- Mercados y cuotas -->
             <div class="w-[100px] text-xs text-center ml-2">
               <div class="text-center <%= match.resultadoDestacado === 'ganado' ? 'text-emerald-400' : (match.resultadoDestacado === 'perdido' ? 'text-red-400' : 'text-gray-400') %> mr-2">
@@ -78,7 +76,7 @@
                   : match.mercadoDestacado %>
               </div>
             </div>
-            <div class="text-sm font-semibold">
+            <div class="text-sm font-semibold mr-1">
               <%= match.cuotaDestacada %>
             </div>
         </div>

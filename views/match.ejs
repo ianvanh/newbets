@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalle del partido</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+  <div class="max-w-4xl mx-auto py-8">
+    <a href="/" class="text-blue-500 hover:underline">&larr; Volver</a>
+
+    <div class="bg-white p-6 rounded-xl shadow mt-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <img src="<%= partido.local.logo %>" alt="<%= partido.local.nombre %>" class="w-14 h-14 object-contain">
+          <span class="text-xl font-bold"><%= partido.local.nombre %></span>
+        </div>
+
+        <span class="text-2xl font-bold">VS</span>
+
+        <div class="flex items-center space-x-4">
+          <span class="text-xl font-bold"><%= partido.visitante.nombre %></span>
+          <img src="<%= partido.visitante.logo %>" alt="<%= partido.visitante.nombre %>" class="w-14 h-14 object-contain">
+        </div>
+      </div>
+
+      <p class="mt-4 text-gray-600">Fecha y hora: <strong><%= partido.dateTime %></strong></p>
+      <p class="text-gray-600">Estado: <strong><%= partido.estado %></strong></p>
+
+      <h2 class="mt-6 text-lg font-semibold">Marcador</h2>
+      <p class="text-xl font-bold"><%= partido.local.golesLocal %> - <%= partido.visitante.golesVisitante %></p>
+
+      <h2 class="mt-6 text-lg font-semibold">Cuotas</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+        <% for (const key in partido.cuotas) { %>
+          <div class="bg-gray-100 p-2 rounded text-center">
+            <span class="font-bold"><%= key %>:</span> <%= partido.cuotas[key] %>
+          </div>
+        <% } %>
+      </div>
+
+      <h2 class="mt-6 text-lg font-semibold">Resultados</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+        <% for (const key in partido.resultados) { %>
+          <div class="bg-gray-100 p-2 rounded text-center">
+            <span class="font-bold"><%= key %>:</span> <%= partido.resultados[key] %>
+          </div>
+        <% } %>
+      </div>
+
+      <h2 class="mt-6 text-lg font-semibold">Probabilidades</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+        <% for (const key in partido.probabilidades) { %>
+          <div class="bg-gray-100 p-2 rounded text-center">
+            <span class="font-bold"><%= key %>:</span> <%= partido.probabilidades[key] %>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
