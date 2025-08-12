@@ -5,37 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title><%= info.name_page %> | Registro</title>
 
-  <!-- META -->
   <meta name="description" content="<%= info.desc %>">
   <meta name="keywords" content="apuestas deportivas, apuestas en vivo, pronósticos, cuotas, fútbol, guías de apuestas, juego responsable">
   <meta name="author" content="<%= info.author %>">
-  <meta name="theme-color" content="#10b981">
+  <meta name="theme-color" content="#111827">
+  
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
   <link rel="canonical" href="<%= info.dominio %>">
+
   <meta property="og:title" content="<%= info.name_page %>">
   <meta property="og:description" content="<%= info.desc %>.">
+
   <meta property="og:image" content="<%= info.dominio %>/images/default.png">
-  <meta property="og:image:alt" content="Balon de futbol.">
+  <meta property="og:image:alt" content="<%= info.name_page %>">
+  <meta property="fb:app_id" content="<%= info.fb_app_id %>">
   <meta property="og:url" content="<%= info.dominio %>">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="<%= info.name_page %>">
   <meta property="og:locale" content="es_ES">
+
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="<%= info.name_page %>">
   <meta name="twitter:description" content="<%= info.desc %>">
   <meta name="twitter:image" content="<%= info.dominio %>/images/default.png">
   <meta name="twitter:image:alt" content="Balon de futbol.">
+  
+  <link rel="manifest" href="/manifest.json">
 
-  <!-- FAVICON -->
   <link rel="icon" href="/images/default.png" type="image/png">
   <link rel="apple-touch-icon" href="/images/default.png">
-
-  <!-- LIBRERÍAS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.min.css" />
-  <link rel="stylesheet" href="/css/styles.css" />
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.min.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body class="text-gray-300">

@@ -8,7 +8,7 @@
   <meta name="description" content="<%= info.desc %>">
   <meta name="keywords" content="apuestas deportivas, apuestas en vivo, pronósticos, cuotas, fútbol, guías de apuestas, juego responsable">
   <meta name="author" content="<%= info.author %>">
-  <meta name="theme-color" content="#10b981">
+  <meta name="theme-color" content="#111827">
 
   <meta name="robots" content="index, follow">
   <meta name="googlebot" content="index, follow">
@@ -18,7 +18,8 @@
   <meta property="og:description" content="<%= info.desc %>.">
 
   <meta property="og:image" content="<%= info.dominio %>/images/default.png">
-  <meta property="og:image:alt" content="Balon de futbol.">
+  <meta property="og:image:alt" content="<%= info.name_page %>">
+  <meta property="fb:app_id" content="<%= info.fb_app_id %>">
   <meta property="og:url" content="<%= info.dominio %>">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="<%= info.name_page %>">
@@ -30,9 +31,11 @@
   <meta name="twitter:image" content="<%= info.dominio %>/images/default.png">
   <meta name="twitter:image:alt" content="Balon de futbol.">
 
+  <link rel="manifest" href="/manifest.json">
+
   <link rel="icon" href="/images/default.png" type="image/png">
   <link rel="apple-touch-icon" href="/images/default.png">
-
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">

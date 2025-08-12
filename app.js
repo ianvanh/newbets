@@ -57,7 +57,7 @@ const checkMobile = (req, res, next) => {
   });
 };
 
-app.use(checkMobile);
+//app.use(checkMobile);
 
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
