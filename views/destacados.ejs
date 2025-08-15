@@ -63,7 +63,7 @@
           </div>
           <!-- Mercados y cuotas -->
             <div class="w-[100px] text-xs text-center ml-2">
-              <div class="text-center <%= match.resultadoDestacado === 'ganado' ? 'text-emerald-400' : (match.resultadoDestacado === 'perdido' ? 'text-red-400' : 'text-gray-400') %> mr-2">
+              <div class="text-center <%= match.resultadoDestacado === 'ganado' ? 'text-emerald-400' : (match.resultadoDestacado === 'perdido' ? 'text-red-400' : 'text-gray-400') %>">
                 <%- (match.mercadoDestacado === 'O15') ? 'Número de goles<br>+1.5'
                   : (match.mercadoDestacado === 'U15') ? 'Número de goles<br>-1.5'
                   : (match.mercadoDestacado === 'O25') ? 'Número de goles<br>+2.5'
@@ -73,6 +73,11 @@
                   : (match.mercadoDestacado === '12') ? 'Doble oportunidad<br> 12'
                   : (match.mercadoDestacado === '1X') ? 'Doble oportunidad<br> 1X'
                   : (match.mercadoDestacado === 'X2') ? 'Doble oportunidad<br> X2'
+                  : (match.mercadoDestacado === 'GG') ? 'Ambos Marcan<br>SI'
+                  : (match.mercadoDestacado === 'NG') ? 'Ambos Marcan<br>NO'
+                  : (match.mercadoDestacado === '1') ? 'Gana Local<br>1'
+                  : (match.mercadoDestacado === '2') ? 'Gana Visitante<br>2'
+                  : (match.mercadoDestacado === 'Empate') ? 'Empate<br>X'
                   : match.mercadoDestacado %>
               </div>
             </div>

@@ -63,14 +63,22 @@
           </div>
           <!-- Mercados y cuotas -->
           <% Object.keys(match.cuotas).forEach(mercado => { %>
-            <div class="w-[100px] text-xs text-center ml-2">
-              <div class="font-bold <%= match.resultados[mercado] === 'ganado' ? 'text-emerald-400' : (match.resultados[mercado] === 'perdido' ? 'text-red-400' : 'text-gray-400') %>">
-                <%= (mercado === 'GG') ? 'Sí'
-                  : (mercado === 'NG') ? 'No'
-                  : (mercado === 'O25') ? '+2.5'
-                  : (mercado === 'U25') ? '-2.5'
-                  : (mercado === 'O35') ? '+3.5'
-                  : (mercado === 'U35') ? '-3.5'
+            <div class="w-[100px] text-xs text-center ml-1">
+              <div class="<%= match.resultados[mercado] === 'ganado' ? 'text-emerald-400' : (match.resultados[mercado] === 'perdido' ? 'text-red-400' : 'text-gray-400') %>">
+                <%- (mercado === 'O15') ? 'Número de goles<br>+1.5'
+                  : (mercado === 'U15') ? 'Número de goles<br>-1.5'
+                  : (mercado === 'O25') ? 'Número de goles<br>+2.5'
+                  : (mercado === 'U25') ? 'Número de goles<br>-2.5'
+                  : (mercado === 'O35') ? 'Número de goles<br>+3.5'
+                  : (mercado === 'U35') ? 'Número de goles<br>-3.5'
+                  : (mercado === '12') ? 'Doble oportunidad<br> 12'
+                  : (mercado === '1X') ? 'Doble oportunidad<br> 1X'
+                  : (mercado === 'X2') ? 'Doble oportunidad<br> X2'
+                  : (mercado === 'GG') ? 'Ambos Marcan<br>SI'
+                  : (mercado === 'NG') ? 'Ambos Marcan<br>NO'
+                  : (mercado === '1') ? 'Gana<br>Local<br>1'
+                  : (mercado === '2') ? 'Gana<br>Visitante<br>2'
+                  : (mercado === 'Empate') ? 'Empate<br>X'
                   : mercado %>
               </div>
             </div>

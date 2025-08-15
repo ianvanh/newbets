@@ -26,23 +26,44 @@ function formatToColombiaTime(utcDateTime) {
   }
 }
 
-function convertHour12To24(hour12Str) {
-  const normalized = hour12Str
-    .trim() // Elimina espacios al inicio/final
-    .replace(/[\u00A0\u202F]/g, ' ') // Reemplaza espacios especiales
-    .replace(/\s+/g, ' ') // Reduce múltiples espacios a uno solo
-    .replace(/\./g, '') // Elimina todos los puntos
-    .toLowerCase()
-    .replace(/^(\d{1,2}:\d{2})\s*([ap])[m]*$/, '$1 $2m'); // Patrón final
-
-  const hour24 = moment(normalized, ['hh:mm a', 'h:mm a'], true);
-  
-  if (!hour24.isValid()) {
-    const cleanInput = hour12Str.trim().replace(/\s+/g, ' ');
-    throw new Error(`No se pudo convertir "${cleanInput}". Ejemplos válidos: "12:00 a.m.", "1:30 p.m.", "04:45 am"`);
+function formatHour(input) {
+  if (/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/.test(input)) {
+    const date = new Date(input);
+    return date.toLocaleTimeString('es-CO', { 
+      timeZone: 'America/Bogota',
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 
-  return hour24.format('HH:mm');
+  let normalized = input
+    .trim()
+    .replace(/[\u00A0\u202F]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/\./g, '')
+    .toLowerCase();
+
+  if (normalized.includes(',')) {
+    normalized = normalized.split(',').pop().trim();
+  }
+
+  if (/([ap])\s*m/.test(normalized)) {
+    const parts = normalized.split(' ');
+    const time = parts[0];
+    const period = parts.slice(1).join('').replace(/\s+/g, '');
+    let [hour, minute] = time.split(':').map(Number);
+    if (period === 'pm' && hour !== 12) hour += 12;
+    if (period === 'am' && hour === 12) hour = 0;
+    return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+  }
+
+  if (/^\d{1,2}:\d{2}$/.test(normalized)) {
+    let [hour, minute] = normalized.split(':').map(Number);
+    return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+  }
+
+  throw new Error(`Formato no reconocido: "${input}"`);
 }
 
 const verificarMercado = (tipo, golesLocal, golesVisitante) => {
@@ -114,7 +135,7 @@ const filtrarPartidosPorMercadosB = async (fecha, mercadosDeseados = []) => {
 
     return {
       ...partido,
-      dateTime: convertHour12To24(partido.dateTime.split(',')[1].replace("a. m.", "a.m.").replace("p. m.", "p.m.")),
+      dateTime: formatHour(partido.dateTime),
       cuotas: cuotasFiltradas,
       resultados: resultadosFiltrados,
       mercadoUsado: mercadoElegido,
@@ -142,7 +163,7 @@ const obtenerPartidosDestacados = async (fecha) => {
 
       return {
         ...p,
-        dateTime: convertHour12To24(p.dateTime.split(',')[1].replace("a. m.", "a.m.").replace("p. m.", "p.m.")),
+        dateTime: formatHour(p.dateTime),
         mercadoDestacado: p.destacado.pr,
         cuotaDestacada: p.destacado.odd,
         resultadoDestacado: resultado
