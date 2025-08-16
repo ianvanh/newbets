@@ -314,6 +314,15 @@ app.get('/pronosticos/ambos_marcan', requireLogin, async (req, res) => {
     partidos
   });
 });
+app.get('/pronosticos/menos_mas_1-5', requireLogin, async (req, res) => {
+  const dia = req.query.fecha;
+  const partidos = await filtrarPartidosPorMercadosB(dia, ['O15', 'U15']);
+  res.render('principales', {
+    info,
+    name_page: "más menos 1.5",
+    partidos
+  });
+});
 app.get('/pronosticos/menos_mas_2-5', requireLogin, async (req, res) => {
   const dia = req.query.fecha;
   const partidos = await filtrarPartidosPorMercadosB(dia, ['O25', 'U25']);
