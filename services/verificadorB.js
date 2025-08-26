@@ -96,7 +96,8 @@ const filtrarPartidosPorMercadosB = async (fecha, mercadosDeseados = []) => {
   const mapaProbabilidades = {
     "D": "D", "1": "1", "X": "X", "2": "2", "1X": "1X",
     "X2": "X2", "12": "12", "GG": "GG", "NG": "NG", "O15": "O15",
-    "U15": "U15", "O25": "O25", "U25": "U25", "O35": "O35", "U35": "U35"
+    "U15": "U15", "O25": "O25", "U25": "U25", "O35": "O35", "U35": "U35",
+    "O05HT": "O05HT", "U05HT": "U05HT"
   };
 
   const partidosFiltrados = partidosDelDia.map(partido => {

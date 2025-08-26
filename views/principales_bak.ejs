@@ -1,82 +1,59 @@
-<%- include('partials/head') %>
-
-<main>
-  <section>
-    <div class="hero-bg">
-      <div class="container mx-auto px-4 lg:px-6 py-10 text-center text-white">
-        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight"><%= name_page.toLowerCase().split(' ').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ') %></h1>
-        <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-           Pronósticos de <%= name_page %> para hoy
-        </p>
+<!-- Encabezado -->
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center gap-2">
+        <img src="<%= partido.local.logo %>" alt="<%= partido.local.nombre %>" class="w-10 h-10 rounded-full">
+        <span class="font-semibold text-sm"><%= partido.local.nombre %></span>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl font-bold"><%= partido.ftScore %></div>
+        <div class="text-xs text-gray-400">HT: <%= partido.htScore %></div>
+      </div>
+      <div class="flex items-center gap-2">
+        <img src="<%= partido.visitante.logo %>" alt="<%= partido.visitante.nombre %>" class="w-10 h-10 rounded-full">
+        <span class="font-semibold text-sm"><%= partido.visitante.nombre %></span>
       </div>
     </div>
-    
-    <div class="max-w-3xl mx-auto space-y-2">
-      <% if (partidos.length === 0) { %>
-        <div class="text-center">
-          <p class="text-gray-300 font-bold">
-            Calculando las mejores jugadas.
-          </p>
-          <dotlottie-player
-            src="https://lottie.host/9192a5b3-824c-4484-861a-7caa917ca8b3/8C3TsRZCag.json"
-            background="transparent"
-            speed="1"
-            style="width: 300px; height: 300px; margin: 0 auto;" class="mx-auto"
-            loop
-            autoplay>
-          </dotlottie-player>
-        </div>
-      <% } else { %>
-        <% partidos.forEach(match => { %>
-        <!-- Tarjeta del partido -->
-        <div class="relative flex items-center bg-gray-800 px-3 py-2 rounded-lg overflow-hidden">
-          <% if (match.finalizado) { %>
-            <% if (match.resultado === 'ganado') { %>
-              <div class="absolute top-0 right-0 h-full w-1 bg-green-500 rounded-r-lg"></div>
-            <% } else { %>
-              <div class="absolute top-0 right-0 h-full w-1 bg-red-500 rounded-r-lg"></div>
-            <% } %>
-          <% } else { %>
-            <div class="absolute top-0 right-0 h-full w-1 bg-yellow-500 rounded-r-lg"></div>
-          <% } %>
-    
-          <!-- Equipos -->
-          <div class="flex-1">
-            <div class="flex items-center gap-2 mb-1">
-              <img src="<%= match.local.logo %>" class="w-6 h-6 flex-shrink-0" />
-              <span class="w-[150px] truncate text-sm"><%= match.local %></span>
-            </div>
-            <div class="flex items-center gap-2">
-              <img src="<%= match.logoVisitante %>" class="w-6 h-6 flex-shrink-0" />
-              <span class="w-[150px] truncate text-sm"><%= match.visitante %></span>
-            </div>
-          </div>
-    
-          <!-- Goles -->
-          <div class="w-[40px] text-center font-semibold text-sm ml-2">
-            <div><%= match.golesLocal || '' %></div>
-            <div><%= match.golesVisitante || '' %></div>
-          </div>
-    
-          <!-- Mercado -->
-          <div class="w-[60px] text-xs text-center ml-2">
-            <div class="font-bold <%= match.resultado === 'ganado' ? "text-emerald-400" : (match.resultado === 'perdido' ? "text-red-400" : "text-gray-400")%>">
-              <%= (match.mercado === 'GG') ? 'Sí' 
-                : (match.mercado === 'NG') ? 'No' 
-                : (match.mercado === 'Over') ? '+2.5' 
-                : (match.mercado === 'Under') ? '-2.5' 
-                : match.mercado %>
-            </div>
-          </div>
-    
-          <!-- Cuota -->
-          <div class="w-[40px] text-right text-sm font-semibold ml-2">
-            <%= match.cuota %>
-          </div>
-        </div>
-        <% }) %>
-      <% }%>
+
+<!-- Estadísticas -->
+    <div class="bg-gray-800 rounded-xl p-3 space-y-3">
+      <div class="flex justify-between text-sm">
+        <span><%= partido.estadisticas.posesion.local %>%</span>
+        <span class="text-gray-400">Posesión</span>
+        <span><%= partido.estadisticas.posesion.visitante %>%</span>
       </div>
-  </section>
-</main>
-<%- include('partials/footer') %>
+      <div class="flex justify-between text-sm">
+        <span><%= partido.estadisticas.rematesTotales.local %></span>
+        <span class="text-gray-400">Remates Totales</span>
+        <span><%= partido.estadisticas.rematesTotales.visitante %></span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span><%= partido.estadisticas.rematesPuerta.local %></span>
+        <span class="text-gray-400">Remates a Puerta</span>
+        <span><%= partido.estadisticas.rematesPuerta.visitante %></span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span><%= partido.estadisticas.corners.local %></span>
+        <span class="text-gray-400">Corners</span>
+        <span><%= partido.estadisticas.corners.visitante %></span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span><%= partido.estadisticas.faltas.local %></span>
+        <span class="text-gray-400">Faltas</span>
+        <span><%= partido.estadisticas.faltas.visitante %></span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span><%= partido.estadisticas.sustituciones.local %></span>
+        <span class="text-gray-400">Sustituciones</span>
+        <span><%= partido.estadisticas.sustituciones.visitante %></span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-yellow-400"><%= partido.estadisticas.amarillas.local %></span>
+        <span class="text-gray-400">Amarillas</span>
+        <span class="text-yellow-400"><%= partido.estadisticas.amarillas.visitante %></span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-red-500"><%= partido.estadisticas.rojas.local %></span>
+        <span class="text-gray-400">Rojas</span>
+        <span class="text-red-500"><%= partido.estadisticas.rojas.visitante %></span>
+      </div>
+    </div>

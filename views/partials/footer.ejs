@@ -56,5 +56,38 @@
 </footer>
 
 <script src="/js/script.js" type="text/javascript"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/sw.js")
+        .then(reg => console.log("SW registrado:", reg))
+        .catch(err => console.error("Error SW:", err));
+    });
+  }
+
+  let deferredPrompt;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    const btn = document.createElement("button");
+    btn.innerText = "Instalar App";
+    btn.style.padding = "10px";
+    btn.style.fontSize = "16px";
+    document.body.appendChild(btn);
+
+    btn.addEventListener("click", () => {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choice) => {
+        if (choice.outcome === "accepted") {
+          console.log("App instalada ✅");
+        } else {
+          console.log("Instalación cancelada ❌");
+        }
+        deferredPrompt = null;
+      });
+    });
+  });
+</script>
 </body>
 </html>

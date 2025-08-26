@@ -6,6 +6,7 @@ const fs = require('fs');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const moment = require('moment-timezone');
+const cron = require('node-cron');
 const ejs = require('ejs');
 const app = express();
 
@@ -14,9 +15,18 @@ const User = require('./services/User');
 const { getWeekKey, getTodayDate, generarCombinaciones, generarResumenSemanal } = require('./services/sofascoreService');
 const { fetchPronosticosFromSportyTrader } = require('./services/sportyTrader');
 const { loadData } = require('./services/data')
-const { principal, pronosticos } = require('./services/leerMatchDay');
+const { todayDate, principal, pronosticos } = require('./services/leerMatchDay');
 const { filtrarPartidosPorMercados } = require('./services/verificador')
 const { filtrarPartidosPorMercadosB, obtenerPartidosDestacados } = require('./services/verificadorB')
+
+global.CACHE_VERSION = Date.now();
+cron.schedule("10 0 * * *", () => {
+  console.log("🕛 Reiniciando cache PWA...");
+  global.CACHE_VERSION = Date.now();
+}, {
+  scheduled: true,
+  timezone: "America/Bogota"
+});
 
 app.use(cors());
 app.use(session({
@@ -56,7 +66,6 @@ const checkMobile = (req, res, next) => {
     errorMessage: "Esta página solo está disponible en dispositivos móviles." 
   });
 };
-
 //app.use(checkMobile);
 
 const apiRoutes = require('./routes/api');
@@ -278,6 +287,102 @@ app.get('/semana/:semana', requireLogin, async (req, res) => {
   }
 });
 
+const { detalle } = require('./services/idApi');
+const { encodeId } = require('./services/encodeId');
+app.get("/encuentro/:id", requireLogin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (/^\d+$/.test(id)) {
+      const encoded = encodeId(parseInt(id, 10));
+      return res.redirect(301, `/encuentro/${encoded}`);
+    }
+    const detalles = await detalle(id);
+
+    // Identificar stats correctos según teamId
+    const statsLocal = detalles.stats_list?.find(s => s.teamId === detalles.localTeam?.id) || {};
+    const statsVisitante = detalles.stats_list?.find(s => s.teamId === detalles.visitorTeam?.id) || {};
+
+    // Procesar eventos con lado correspondiente
+    const eventos = detalles.events_list?.map(ev => ({
+      minuto: ev.minute || 0,
+      extraMinute: ev.extraMinute || null,
+      tipo: ev.type, // goal, yellowcard, redcard, substitution, etc...
+      jugador: ev.playerName,
+      jugadorSale: ev.relatedPlayerName || null,
+      result: ev.result || null,
+      varResult: ev.varResult || null,
+      equipo:
+        String(ev.teamId) === String(detalles.localTeam?.id)
+          ? 'local'
+          : String(ev.teamId) === String(detalles.visitorTeam?.id)
+          ? 'visitante'
+          : 'desconocido'
+    }))
+    .sort((a, b) =>
+      (a.minuto + (a.extraMinute || 0)) - (b.minuto + (b.extraMinute || 0))
+    ) || [];
+
+    const datosDetallados = {
+      local: {
+        nombre: detalles.localTeam?.name,
+        logo: detalles.localTeam?.logoPath,
+        goles: detalles.localTeamScore ?? 0
+      },
+      visitante: {
+        nombre: detalles.visitorTeam?.name,
+        logo: detalles.visitorTeam?.logoPath,
+        goles: detalles.visitorTeamScore ?? 0
+      },
+      htScore: detalles.htScore ?? '0-0',
+      ftScore: detalles.ftScore ?? `${detalles.localTeamScore ?? 0}-${detalles.visitorTeamScore ?? 0}`,
+      estadisticas: {
+        posesion: {
+          local: statsLocal.possessiontime ?? 0,
+          visitante: statsVisitante.possessiontime ?? 0
+        },
+        rematesTotales: {
+          local: statsLocal.shots?.total ?? 0,
+          visitante: statsVisitante.shots?.total ?? 0
+        },
+        rematesPuerta: {
+          local: statsLocal.shots?.ongoal ?? 0,
+          visitante: statsVisitante.shots?.ongoal ?? 0
+        },
+        corners: {
+          local: statsLocal.corners ?? 0,
+          visitante: statsVisitante.corners ?? 0
+        },
+        faltas: {
+          local: statsLocal.fouls ?? 0,
+          visitante: statsVisitante.fouls ?? 0
+        },
+        sustituciones: {
+          local: statsLocal.substitutions ?? 0,
+          visitante: statsVisitante.substitutions ?? 0
+        },
+        amarillas: {
+          local: statsLocal.yellowcards ?? 0,
+          visitante: statsVisitante.yellowcards ?? 0
+        },
+        rojas: {
+          local: statsLocal.redcards ?? 0,
+          visitante: statsVisitante.redcards ?? 0
+        }
+      },
+      eventos
+    };
+
+    res.render('encuentro', {
+      info,
+      name_page: "Detalle del Partido",
+      partido: datosDetallados
+    });
+
+  } catch (e) {
+    console.error('Error obteniendo detalles:', e.message);
+    res.status(500).send('Error obteniendo detalles del partido');
+  }
+});
 app.get('/pronosticos/destacados', requireLogin, async (req, res) => {
   const dia = req.query.fecha;
   const partidos = await obtenerPartidosDestacados(dia)
@@ -314,6 +419,15 @@ app.get('/pronosticos/ambos_marcan', requireLogin, async (req, res) => {
     partidos
   });
 });
+app.get('/pronosticos/menos_mas_0-5_primer_tiempo', requireLogin, async (req, res) => {
+  const dia = req.query.fecha;
+  const partidos = await filtrarPartidosPorMercadosB(dia, ['O05HT', 'U05HT']);
+  res.render('principales', {
+    info,
+    name_page: "más menos 0.5 primer tiempo",
+    partidos
+  });
+});
 app.get('/pronosticos/menos_mas_1-5', requireLogin, async (req, res) => {
   const dia = req.query.fecha;
   const partidos = await filtrarPartidosPorMercadosB(dia, ['O15', 'U15']);
@@ -338,21 +452,6 @@ app.get('/pronosticos/menos_mas_3-5', requireLogin, async (req, res) => {
   res.render('principales', {
     info,
     name_page: "más menos 3.5",
-    partidos
-  });
-});
-app.get('/pronosticos/encuentro', requireLogin, async (req, res) => {
-  const partidos = await pronosticos()
-  console.log(partidos)
-  /*
-  const partido = partidos.find(p => p.shortId === req.params.shortId);
-  if (!partido) {
-    return res.status(404).send('Partido no encontrado');
-  }
-  */
-  res.render('encuentro', {
-    info,
-    name_page: "Encuentro",
     partidos
   });
 });
@@ -404,6 +503,41 @@ app.get('/cookies', (req, res) => {
 });
 app.get('/ping', (req, res) => {
   res.send('Pong');
+});
+app.get("/sw.js", (req, res) => {
+  res.set("Content-Type", "application/javascript");
+
+  const rutas = [
+    "/", "/best-play", "/matches",
+    "/pronosticos/destacados", "/pronosticos/1x2",
+    "/pronosticos/doble_oportunidad", "/pronosticos/ambos_marcan",
+    "/menos_mas_1-5", "/menos_mas_2-5", "/menos_mas_3-5"
+  ];
+
+  res.send(`
+    const CACHE_NAME = "pwa-cache-${global.CACHE_VERSION}";
+    const RUTAS_A_CACHEAR = ${JSON.stringify(rutas)};
+
+    self.addEventListener("install", (event) => {
+      event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(RUTAS_A_CACHEAR))
+      );
+    });
+
+    self.addEventListener("activate", (event) => {
+      event.waitUntil(
+        caches.keys().then((keys) =>
+          Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+        )
+      );
+    });
+
+    self.addEventListener("fetch", (event) => {
+      event.respondWith(
+        caches.match(event.request).then((resp) => resp || fetch(event.request))
+      );
+    });
+  `);
 });
 
 app.get('/login', (req, res) => {
