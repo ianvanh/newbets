@@ -12,6 +12,7 @@ const app = express();
 
 const { PORT, SECRET, info } = require('./config');
 const User = require('./services/User');
+const { main } = require('./services/updateRedis');
 const { getWeekKey, getTodayDate, generarCombinaciones, generarResumenSemanal } = require('./services/sofascoreService');
 const { fetchPronosticosFromSportyTrader } = require('./services/sportyTrader');
 const { loadData } = require('./services/data')
@@ -19,13 +20,23 @@ const { todayDate, principal, pronosticos } = require('./services/leerMatchDay')
 const { filtrarPartidosPorMercados } = require('./services/verificador')
 const { filtrarPartidosPorMercadosB, obtenerPartidosDestacados } = require('./services/verificadorB')
 
+const TIMEZONE = 'America/Bogota'
 global.CACHE_VERSION = Date.now();
 cron.schedule("10 0 * * *", () => {
-  console.log("🕛 Reiniciando cache PWA...");
   global.CACHE_VERSION = Date.now();
 }, {
   scheduled: true,
-  timezone: "America/Bogota"
+  timezone: TIMEZONE
+});
+cron.schedule('58 * * * *', async () => {
+  await main();
+}, {
+  timezone: TIMEZONE
+});
+cron.schedule('2 0 * * *', async () => {
+  await main();
+}, {
+  timezone: TIMEZONE
 });
 
 app.use(cors());
