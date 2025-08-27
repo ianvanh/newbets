@@ -14,7 +14,7 @@ async function fetchFixture(originalUrl) {
   } catch (e) {
     if (e.response && [401, 403].includes(e.response.status)) {
       console.warn("Directo bloqueado, usando ScraperAPI...");
-      const scraperUrl = `https://api.scraperapi.com?api_key=${SCRAPER_API_KEY}&country_code=us&url=${encodeURIComponent(originalUrl)}`;
+      const scraperUrl = `https://api.scraperapi.com?api_key=${SCRAPER_API_KEY}&render=true&country_code=us&url=${encodeURIComponent(originalUrl)}`;
       const scraper = await axios.get(scraperUrl, { headers, timeout: 25000 });
       return scraper.data;
     } else {
