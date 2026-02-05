@@ -131,7 +131,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
   // Mostramos nuestro botón de instalación personalizado
   if (installButton) {
     installButton.classList.remove('hidden');
-    console.log('`beforeinstallprompt` fue disparado. El botón de instalación está visible.');
+    //console.log('`beforeinstallprompt` fue disparado. El botón de instalación está visible.');
   }
 });
 
@@ -147,7 +147,7 @@ if (installButton) {
     
     // Esperamos a que el usuario responda al aviso
     const { outcome } = await deferredPrompt.userChoice;
-    console.log(`El usuario respondió al aviso: ${outcome}`);
+    //console.log(`El usuario respondió al aviso: ${outcome}`);
     
     // Ya no necesitamos el evento, lo descartamos
     deferredPrompt = null;
@@ -159,7 +159,7 @@ if (installButton) {
 
 // Opcional: Escucha cuando la app ya ha sido instalada
 window.addEventListener('appinstalled', () => {
-  console.log('¡PWA instalada con éxito!');
+  //console.log('¡PWA instalada con éxito!');
   // Oculta el botón de instalación si aún estuviera visible
   if (installButton) {
     installButton.classList.add('hidden');

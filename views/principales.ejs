@@ -34,7 +34,6 @@
         </div>
       <% } else { %>
         <% partidos.forEach(match => { %>
-        <a href="/encuentro/<%= match.apiId %>" class="block mb-2">
           <div class="relative flex items-center bg-gray-800 px-3 py-2 rounded-lg overflow-hidden">
             <!-- Indicador de resultado -->
             <% if (match.resultados[match.mercadoUsado] === 'ganado') { %>
@@ -73,6 +72,8 @@
                 <div class="<%= match.resultados[mercado] === 'ganado' ? 'text-emerald-400' : (match.resultados[mercado] === 'perdido' ? 'text-red-400' : 'text-gray-400') %>">
                   <%- (mercado === 'O15') ? 'Número de goles<br>+1.5'
                     : (mercado === 'U15') ? 'Número de goles<br>-1.5'
+                    : (mercado === 'O05HT') ? 'Goles 1er Tiempo<br>+0.5'
+                    : (mercado === 'U05HT') ? 'Goles 1er Tiempo<br>-0.5'
                     : (mercado === 'O25') ? 'Número de goles<br>+2.5'
                     : (mercado === 'U25') ? 'Número de goles<br>-2.5'
                     : (mercado === 'O35') ? 'Número de goles<br>+3.5'
@@ -93,7 +94,6 @@
               </div>
             <% }) %>
           </div>
-        </a>
         <% }) %>
       <% } %>
     </div>

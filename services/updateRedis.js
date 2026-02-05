@@ -5,7 +5,6 @@ const { createClient } = require('@redis/client');
 const { encodeId } = require('./encodeId');
 
 const redisClient = createClient({ url: process.env.REDIS_URL });
-const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY;
 
 function getTodayRangeUTC() {
   const nowBogota = moment().tz('America/Bogota');
@@ -32,6 +31,86 @@ function copTime(utcDateTime) {
   });
 }
 
+// FUNCIÓN MEJORADA CON PROXY GRATUITO
+async function fetchWithProxy(url) {
+  const proxies = [
+    'https://api.allorigins.win/raw?url=',  // Proxy 1
+    'https://corsproxy.io/?',                // Proxy 2
+    'https://thingproxy.freeboard.io/fetch/', // Proxy 3
+    'https://proxy.cors.sh/'                 // Proxy 4 (necesita headers)
+  ];
+
+  const headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'es-US,es;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Referer': 'https://betmines.com/',
+    'Origin': 'https://betmines.com',
+    'Sec-Fetch-Dest': 'empty',
+    'Sec-Fetch-Mode': 'cors',
+    'Sec-Fetch-Site': 'same-site',
+    'Priority': 'u=0, i'
+  };
+
+  // Intentar con cada proxy
+  for (const proxy of proxies) {
+    try {
+      console.log(`Intentando con proxy: ${proxy}`);
+      
+      let proxyUrl;
+      if (proxy.includes('corsproxy.io')) {
+        proxyUrl = `${proxy}${encodeURIComponent(url)}`;
+      } else if (proxy.includes('cors.sh')) {
+        proxyUrl = proxy + url;
+        headers['x-cors-api-key'] = 'temp_09a2b4c6d8e0f1a3b5c7d9e1f'; // Clave temporal
+      } else {
+        proxyUrl = proxy + encodeURIComponent(url);
+      }
+      
+      const response = await axios.get(proxyUrl, {
+        headers,
+        timeout: 15000
+      });
+      
+      console.log(`✓ Proxy exitoso: ${proxy}`);
+      return response.data;
+      
+    } catch (error) {
+      console.log(`✗ Proxy falló (${proxy}): ${error.message}`);
+      continue;
+    }
+  }
+  
+  throw new Error('Todos los proxies fallaron');
+}
+
+// ALTERNATIVA: Usar fetch nativo con headers específicos
+async function fetchDirectWithHeaders(url) {
+  const headers = {
+    'authority': 'api.betmines.com',
+    'accept': 'application/json, text/plain, */*',
+    'accept-language': 'es-US,es;q=0.9',
+    'cache-control': 'no-cache',
+    'pragma': 'no-cache',
+    'referer': 'https://betmines.com/',
+    'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-site',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+  };
+
+  try {
+    const response = await axios.get(url, { headers, timeout: 20000 });
+    return response.data;
+  } catch (error) {
+    console.log('Direct fetch falló:', error.message);
+    throw error;
+  }
+}
 
 async function main() {
   try {
@@ -41,33 +120,84 @@ async function main() {
     await redisClient.connect();
 
     const targetUrl = `https://api.betmines.com/betmines/v1/fixtures/web?dateFormat=extended&platform=website&from=${from}&to=${to}`;
-    const scraperUrl = `https://api.scraperapi.com?api_key=${SCRAPER_API_KEY}&render=true&country_code=us&url=${encodeURIComponent(targetUrl)}`;
+    
+    console.log(`🔗 URL objetivo: ${targetUrl}`);
+    console.log(`📅 Rango: ${from} a ${to}`);
 
-    const response = await axios.get(scraperUrl, {
-      timeout: 25000,
-      headers: { Accept: "application/json" }
-    });
+    let fixtures;
+    
+    // ESTRATEGIA 1: Intentar con proxy primero
+    try {
+      fixtures = await fetchWithProxy(targetUrl);
+      console.log('✅ Datos obtenidos via proxy');
+    } catch (proxyError) {
+      console.log('Proxy falló, intentando directo...');
+      
+      // ESTRATEGIA 2: Intentar directo con headers
+      try {
+        fixtures = await fetchDirectWithHeaders(targetUrl);
+        console.log('✅ Datos obtenidos via direct fetch');
+      } catch (directError) {
+        console.log('Direct fetch falló, intentando última opción...');
+        
+        // ESTRATEGIA 3: Usar scraperapi si existe la key
+        if (process.env.SCRAPER_API_KEY) {
+          const scraperUrl = `https://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&render=true&country_code=us&url=${encodeURIComponent(targetUrl)}`;
+          const response = await axios.get(scraperUrl, {
+            headers: { Accept: "application/json" }
+          });
+          fixtures = response.data;
+          console.log('✅ Datos obtenidos via ScraperAPI');
+        } else {
+          throw new Error('No hay API key de ScraperAPI configurada');
+        }
+      }
+    }
 
-    const fixtures = response.data;
+    // Validar que fixtures sea un array
+    if (!Array.isArray(fixtures)) {
+      console.log('⚠️  La respuesta no es un array:', typeof fixtures);
+      
+      // Intentar extraer array si está dentro de objeto
+      if (fixtures && typeof fixtures === 'object') {
+        // Buscar cualquier propiedad que sea array
+        const arrayKeys = Object.keys(fixtures).filter(key => Array.isArray(fixtures[key]));
+        
+        if (arrayKeys.length > 0) {
+          console.log(`Encontrado array en propiedad: ${arrayKeys[0]}`);
+          fixtures = fixtures[arrayKeys[0]];
+        } else {
+          // Guardar respuesta para debugging
+          const debugFile = `debug_fixtures_${Date.now()}.json`;
+          require('fs').writeFileSync(debugFile, JSON.stringify(fixtures, null, 2));
+          console.log(`Respuesta guardada en: ${debugFile}`);
+          throw new Error('La respuesta no contiene un array de fixtures');
+        }
+      }
+    }
+
+    console.log(`📊 Total fixtures recibidos: ${fixtures.length}`);
 
     const partidosFiltrados = fixtures.filter(
       (f) => f.predictionOddValue && parseFloat(f.predictionOddValue) >= 1.16
     );
 
+    console.log(`🎯 Partidos filtrados (odd >= 1.16): ${partidosFiltrados.length}`);
+
     const partidos = partidosFiltrados.map((f) => ({
       apiId: encodeId(f.id),
       dateTime: copTime(f.dateTime),
       local: {
-        nombre: f.localTeam.name,
-        logo: f.localTeam.logoPath,
+        nombre: f.localTeam?.name || 'Desconocido',
+        logo: f.localTeam?.logoPath || null,
         golesLocal: `${f.localTeamScore || "0"}`,
       },
       visitante: {
-        nombre: f.visitorTeam.name,
-        logo: f.visitorTeam.logoPath,
+        nombre: f.visitorTeam?.name || 'Desconocido',
+        logo: f.visitorTeam?.logoPath || null,
         golesVisitante: `${f.visitorTeamScore || "0"}`,
       },
-      estado: f.timeStatus,
+      estado: f.timeStatus || 'No iniciado',
       destacado: {
         pr: f.prediction || null,
         odd: f.predictionOddValue || null,
@@ -130,15 +260,58 @@ async function main() {
 
     const redisKey = `partidosJSON:${fecha}`;
     await redisClient.setEx(redisKey, 3600, JSON.stringify(partidos));
-    await redisClient.disconnect();
-
-    console.log(`✅ Partidos guardados en Redis: ${redisKey}`);
+    
+    console.log(`✅ ${partidos.length} partidos guardados en Redis: ${redisKey}`);
+    console.log('📋 Primer partido:', partidos[0] ? `${partidos[0].local.nombre} vs ${partidos[0].visitante.nombre}` : 'No hay partidos');
+    
   } catch (err) {
     console.error("❌ Error general:", err.message);
+    console.error("Stack:", err.stack);
+  } finally {
     if (redisClient.isOpen) {
       await redisClient.disconnect();
+      console.log('🔌 Conexión Redis cerrada');
     }
   }
 }
 
-module.exports = { main };
+// Para ejecutar pruebas rápidas
+async function testProxy() {
+  try {
+    const { from, to } = getTodayRangeUTC();
+    const targetUrl = `https://api.betmines.com/betmines/v1/fixtures/web?dateFormat=extended&platform=website&from=${from}&to=${to}`;
+    
+    console.log('🧪 Probando proxies...');
+    const data = await fetchWithProxy(targetUrl);
+    
+    console.log('✅ Proxy funcionó!');
+    console.log('Tipo de respuesta:', typeof data);
+    if (Array.isArray(data)) {
+      console.log('Número de fixtures:', data.length);
+      if (data.length > 0) {
+        console.log('Primer fixture:', {
+          id: data[0].id,
+          local: data[0].localTeam?.name,
+          visitante: data[0].visitorTeam?.name
+        });
+      }
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('❌ Test falló:', error.message);
+    return null;
+  }
+}
+
+// Exportar ambas funciones
+module.exports = { 
+  main,
+  testProxy,
+  fetchWithProxy 
+};
+
+// Si se ejecuta directamente
+if (require.main === module) {
+  main().catch(console.error);
+}

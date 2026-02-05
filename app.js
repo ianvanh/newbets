@@ -20,25 +20,6 @@ const { todayDate, principal, pronosticos } = require('./services/leerMatchDay')
 const { filtrarPartidosPorMercados } = require('./services/verificador')
 const { filtrarPartidosPorMercadosB, obtenerPartidosDestacados } = require('./services/verificadorB')
 
-const TIMEZONE = 'America/Bogota'
-global.CACHE_VERSION = Date.now();
-cron.schedule("10 0 * * *", () => {
-  global.CACHE_VERSION = Date.now();
-}, {
-  scheduled: true,
-  timezone: TIMEZONE
-});
-cron.schedule('58 * * * *', async () => {
-  await main();
-}, {
-  timezone: TIMEZONE
-});
-cron.schedule('2 0 * * *', async () => {
-  await main();
-}, {
-  timezone: TIMEZONE
-});
-
 app.use(cors());
 app.use(session({
   secret: SECRET,

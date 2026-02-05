@@ -9,13 +9,13 @@ async function fetchFixture(originalUrl) {
   const headers = { "User-Agent": "Mozilla/5.0", Accept: "application/json" };
 
   try {
-    const direct = await axios.get(originalUrl, { headers, timeout: 12000 });
+    const direct = await axios.get(originalUrl, { headers });
     return direct.data;
   } catch (e) {
     if (e.response && [401, 403].includes(e.response.status)) {
       console.warn("Directo bloqueado, usando ScraperAPI...");
       const scraperUrl = `https://api.scraperapi.com?api_key=${SCRAPER_API_KEY}&render=true&country_code=us&url=${encodeURIComponent(originalUrl)}`;
-      const scraper = await axios.get(scraperUrl, { headers, timeout: 25000 });
+      const scraper = await axios.get(scraperUrl, { headers });
       return scraper.data;
     } else {
       throw e;
