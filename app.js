@@ -6,19 +6,20 @@ const fs = require('fs');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const moment = require('moment-timezone');
-const cron = require('node-cron');
 const ejs = require('ejs');
 const app = express();
 
 const { PORT, SECRET, info } = require('./config');
 const User = require('./services/User');
-const { main } = require('./services/updateRedis');
+const scraperModule = require('./services/updateRedis');
 const { getWeekKey, getTodayDate, generarCombinaciones, generarResumenSemanal } = require('./services/sofascoreService');
 const { fetchPronosticosFromSportyTrader } = require('./services/sportyTrader');
 const { loadData } = require('./services/data')
 const { todayDate, principal, pronosticos } = require('./services/leerMatchDay');
 const { filtrarPartidosPorMercados } = require('./services/verificador')
 const { filtrarPartidosPorMercadosB, obtenerPartidosDestacados } = require('./services/verificadorB')
+
+scraperModule.iniciarCronJob()
 
 app.use(cors());
 app.use(session({

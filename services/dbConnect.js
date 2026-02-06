@@ -22,7 +22,7 @@ db.on('error', (err) => {
 });
 
 db.once('open', () => {
-  console.log('✅ Conexión exitosa a MongoDB Atlas');
+  console.log('✅ Conexión exitosa a MongoDB');
   // console.log(`Base de datos: ${db.name}`);
   // console.log(`Host: ${db.host}`);
 });

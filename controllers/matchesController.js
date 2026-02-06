@@ -159,6 +159,7 @@ exports.result = async (req, res) => {
   }
 };
 
+// actualizar resultados combinaciones
 exports.update = async (req, res) => {
   try {
     await updateResult();
@@ -168,7 +169,8 @@ exports.update = async (req, res) => {
     res.status(500).json({ success: false, error: 'Error al actualizar los resultados' });
   }
 }
-const { updateResult2, cachePronosticos, cachePrincipales } = require('../services/updateResults');
+
+const { updateResult2, cachePrincipales } = require('../services/updateResults');
 exports.update2 = async (req, res) => {
   try {
     await updateResult2();
