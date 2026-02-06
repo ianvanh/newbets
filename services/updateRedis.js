@@ -1,5 +1,6 @@
 require("dotenv").config();
 const moment = require('moment-timezone');
+const cron = require('node-cron');
 const { saveCache, loadCache } = require('./redisLoad');
 const { encodeId } = require('./encodeId');
 
@@ -192,7 +193,7 @@ async function main() {
 }
 
 function iniciarCronJob() {
-  cron.schedule('10 * * * *', async () => {
+  cron.schedule('12 * * * *', async () => {
     console.log("⏰ [Cron] Ejecutando tarea programada...");
     await main();
   }, {
