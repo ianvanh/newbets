@@ -175,7 +175,7 @@ async function scraper() {
         };
       });
 
-      await redisClient.setEx(redisKey, 60 * 60 * 1.1, JSON.stringify(partidos));
+      await redisClient.setEx(redisKey, 60 * 60 + 600, JSON.stringify(partidos));
       console.log(`✅ [Scraper] Guardado en Redis: ${redisKey}`);
       
       return { success: true, count: partidos.length, message: "Datos actualizados" };
